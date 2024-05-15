@@ -88,10 +88,9 @@ def comunicacion_serial_cargador(ser, trama, logger):
     trama_a_enviar = trama
 
     # Se hace máximo 4 intentos de comunicación con el cargador
-    while (es_util == False and intentos != 0):
+    while (es_util == False and intentos > 0):
         try:
             ser.write(trama_a_enviar)
-
         except ser.SerialTimeoutException as e:
             logger.error('Tiempo de espera al enviar la trama: %s', str(e))
         except Exception as e:
@@ -117,9 +116,9 @@ def comunicacion_serial_cargador(ser, trama, logger):
             except Exception as e:
                 logger.error('No se encontró el x23 en la trama')
                 logger.error(e)
-                time.sleep(2)
         else:
             estado_cargador = 'Desconocido'
+            intentos=intentos-1
             logger.error('Sin respuesta del cargador')
             try:
                 data_in = b''
@@ -129,14 +128,12 @@ def comunicacion_serial_cargador(ser, trama, logger):
                 logger.error(
                     'Problema en la comunicación serial (reset_input)')
                 logger.error(e)
-            time.sleep(2)
 
         if len(data_in) > 28 and hex(data_in[0]) == '0x23' and hex(data_in[1]) == '0x23':
             if hex(data_in[5]) == '0x1':
                 es_inutil = True
                 es_util = False
                 trama_a_enviar = TRAMA_INICIALIZAR
-                time.sleep(0.5)
 
             elif hex(data_in[5]) == '0x0':
                 es_util = True
@@ -149,12 +146,12 @@ def comunicacion_serial_cargador(ser, trama, logger):
                     voltaje = int(hex(data_in[26])+hex(data_in[27])[2:], 16)
                 logger.info(f'Estado del cargador: {estado_cargador}')
         intentos = intentos-1
+        time.sleep(0.5)
 
     if len(data_in) > 0 and es_util == False and es_inutil == False:
         logger.error(f'Trama Desconocida: {data_in}')
         estado_cargador = 'Trama Desconocida'
         logger.info(f'Estado del cargador: {estado_cargador}')
-        time.sleep(3)
         try:
             data_in = b''
             ser.reset_input_buffer()
@@ -180,7 +177,7 @@ def comunicacion_serial_medidor(ser, logger):
         except Exception as e:
             logger.error('Problema al enviar la trama al medidor')
             logger.error(e)
-            
+
         try:
             data_in = ser.read(9)
         except Exception as e:
@@ -208,7 +205,7 @@ def comunicacion_serial_medidor(ser, logger):
                 logger.error(e)
 
         intentos = intentos-1
-        time.sleep(1)
+        time.sleep(0.5)
 
     if len(data_in) > 0 and trama_correcta == False:
         logger.error(f'Trama Desconocida desde el medidor: {data_in}')
