@@ -2,9 +2,9 @@ import logging
 import logging.handlers
 import json
 
+# Se carga el ID único de cada raspberry
 with open('/home/pi/ID.json') as identificador:
     datos_identificador = json.load(identificador)
-    # ID unico de cada cargador (serial de la raspberry)
 
 ID_CARGADOR = str(datos_identificador['ID'])
 NUM_CARGADOR = str(datos_identificador['Estacion'])
@@ -17,9 +17,9 @@ def custom_logger():
     # Create handlers
     b_handler = logging.StreamHandler()
     c_handler = logging.handlers.RotatingFileHandler(
-        f'infofile{NUM_CARGADOR}.log', maxBytes=50*1024*1024, backupCount=1)
+        f'infofile{NUM_CARGADOR}.log', maxBytes=5*1024*1024, backupCount=1)
     f_handler = logging.handlers.RotatingFileHandler(
-        f'errorfile{NUM_CARGADOR}.log', maxBytes=5*1024*1024, backupCount=1)
+        f'errorfile{NUM_CARGADOR}.log', maxBytes=3*1024*1024, backupCount=1)
 
     b_handler.setLevel(logging.INFO)
     c_handler.setLevel(logging.INFO)
