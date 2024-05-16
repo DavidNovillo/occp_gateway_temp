@@ -1,15 +1,9 @@
 import time
 import struct
 
-TRAMA_INICIALIZAR = bytearray(
-    b'\x23\x23\x00\x32\x40\x01\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x83\x0D\x0A')
-TRAMA_CARGAR = bytearray(
-    b'\x23\x23\x00\x32\x40\x01\x10\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x84\x0D\x0A')
-TRAMA_DETENER = bytearray(
-    b'\x23\x23\x00\x32\x40\x01\x10\x00\x0B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x8E\x0D\x0A')
-TRAMA_MEDIDOR = bytearray(b'\x01\x04\x01\x56\x00\x02\x90\x27')
+from constants import TRAMA_INICIALIZAR, TRAMA_MEDIDOR
 
-# ===== FUNCION PARA OBTENER EL ESTADO DEL CARGADOR ====#
+# FUNCION PARA OBTENER EL ESTADO DEL CARGADOR
 
 
 def estados_cargador(dato):
@@ -35,7 +29,6 @@ def estados_cargador(dato):
     if (dato == '0x1a'):
         estado = 'Pistola Conectada Fin de Carga'
     return (estado)
-# *****************************************************#
 
 # ==== FUNCION PARA CREAR EL ESTADO DEL CARGADOR PARA EL SERVIDOR ====#
 
@@ -118,7 +111,7 @@ def comunicacion_serial_cargador(ser, trama, logger):
                 logger.error(e)
         else:
             estado_cargador = 'Desconocido'
-            intentos=intentos-1
+            intentos = intentos-1
             logger.error('Sin respuesta del cargador')
             try:
                 data_in = b''

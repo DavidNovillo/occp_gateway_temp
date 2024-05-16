@@ -1,13 +1,7 @@
 import logging
 import logging.handlers
-import json
+from constants import NUM_CARGADOR
 
-# Se carga el ID único de cada raspberry
-with open('/home/pi/ID.json') as identificador:
-    datos_identificador = json.load(identificador)
-
-ID_CARGADOR = str(datos_identificador['ID'])
-NUM_CARGADOR = str(datos_identificador['Estacion'])
 
 def custom_logger():
     # Create a custom logger
