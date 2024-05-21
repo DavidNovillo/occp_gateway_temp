@@ -2,8 +2,7 @@
 # Código creado por @TekkuEc para BYD en Ecuador
 # Versión: 3.XXy
 # Desarrollador: David Novillo
-# Colaboradores: Rafael Auqui, Christian Guerra
-# Quito, Ecuador - Octubre 2019
+# Loja, Ecuador - Mayo 2024
 # ===================== www.tekku.com.ec =========================#
 import os
 import subprocess
@@ -16,7 +15,6 @@ from ocpp.v16.enums import Action
 from ocpp.v16 import call_result, call
 import asyncio
 import websockets
-from charge_point import MyChargePoint
 import RPi.GPIO as GPIO
 import json
 from termcolor import colored
@@ -24,6 +22,10 @@ from termcolor import colored
 from logger.logger_creator import custom_logger
 from charger_communication.serial_communication import comunicacion_serial_cargador, comunicacion_serial_medidor
 from constants import TRAMA_CARGAR, TRAMA_DETENER, TRAMA_INICIALIZAR, NUM_CARGADOR, ID_CARGADOR
+from ocpp_communication.charge_point import MyChargePoint
+
+# Importaciones de prueba
+from tests.comunicacion_serial_test import test_serial_cargador, test_serial_medidor
 
 
 async def main():
@@ -161,10 +163,11 @@ async def main():
 
                 # Mantener la comunicación serial con el equipo de carga
                 while True:
-                    # Leer datos del equipo de carga
-                    # reemplazar 100 con el número de bytes que deseas leer
-                    data = ser.read(100)
-                    print(f"Datos recibidos del equipo de carga: {data}")
+                    # Time stamp
+                    ts = int(time.time())
+                    # Leer datos del cargador (TEST)
+                    estado_cargador, porcentaje_carga, corriente, voltaje = comunicacion_serial_cargador(
+                        ser, TRAMA_INICIALIZAR, logger)
 
                     # Aquí puedes agregar el código para procesar los datos recibidos y
                     # posiblemente enviar mensajes adicionales al Central System.
