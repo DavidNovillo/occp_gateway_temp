@@ -3,7 +3,7 @@ from datetime import datetime
 import asyncio
 from ocpp.routing import on
 from ocpp.v16 import ChargePoint as cp
-from ocpp.v16.enums import RemoteStartStopStatus
+from ocpp.v16.enums import RemoteStartStopStatus, ClearChargingProfileStatus
 from ocpp.v16 import call_result, call
 
 from constants import CHARGE_POINT_MODEL, CHARGE_POINT_VENDOR, ID_CARGADOR
@@ -51,7 +51,7 @@ class MyChargePoint(cp):
 
     # Función que envía un mensaje de MeterValues al Central System
     async def send_meter_values(self, meter_values):
-        request = call.MeterValuesPayload(
+        request = call.MeterValues(
             meter_value=meter_values
         )
         response = await self.call(request)
@@ -59,7 +59,7 @@ class MyChargePoint(cp):
 
     # Función que envía un mensaje de StartTransaction al Central System
     async def send_start_transaction(self, connector_id, id_tag, timestamp, meter_start):
-        request = call.StartTransactionPayload(
+        request = call.StartTransaction(
             connector_id=connector_id,
             id_tag=id_tag,
             timestamp=timestamp,
@@ -82,7 +82,7 @@ class MyChargePoint(cp):
 
     # Función que envía un mensaje de StatusNotification al Central System
     async def send_status_notification(self, connector_id, status, error_code, timestamp=None, info=None, vendor_id=None, vendor_error_code=None):
-        request = call.StatusNotificationPayload(
+        request = call.StatusNotification(
             connector_id=connector_id,
             status=status,
             error_code=error_code,
@@ -107,22 +107,31 @@ class MyChargePoint(cp):
         # Llamar al método original para procesar el mensaje
         await super()._handle_call(call)
 
+    # Función que maneja la recepción de un mensaje Clear Charging Profile
+    @on('ClearChargingProfile')
+    async def on_clear_charging_profile(self, **kwargs):
+        # print('Received ClearChargingProfile request')
+        print(f'Data: {kwargs}')
+
+        # Almacenar los datos en la cola
+        await self.queue.put(('ClearChargingProfile', kwargs))
+
+        # Devolver un resultado
+        return call_result.ClearChargingProfile(
+            status=ClearChargingProfileStatus.accepted
+        )
+
     # Función que maneja la recepción de un mensaje Remote Start Transaction
     @on('RemoteStartTransaction')
     async def remote_start_transaction(self, id_tag, connector_id, **kwargs):
-        print('Received RemoteStartTransaction request')
+        # print('Received RemoteStartTransaction request')
         print(f'id_tag: {id_tag}')
         print(f'connector_id: {connector_id}')
         print(f'Additional data: {kwargs}')
         # Almacenar los datos en la cola
-        await self.queue.put((id_tag, connector_id, kwargs))
-        # Aquí puedes manejar la solicitud RemoteStartTransaction
-        # Por ejemplo, puedes iniciar una transacción y devolver un resultado
-
-        # Iniciar la transacción
-        # Puedes agregar tu lógica para iniciar la transacción aquí
+        await self.queue.put(('RemoteStartTransaction', id_tag, connector_id, kwargs))
 
         # Devolver un resultado
-        return call_result.RemoteStartTransactionPayload(
+        return call_result.RemoteStartTransaction(
             status=RemoteStartStopStatus.accepted
         )
