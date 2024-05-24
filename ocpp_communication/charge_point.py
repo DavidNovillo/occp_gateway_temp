@@ -1,9 +1,8 @@
 # charge_point.py
 from datetime import datetime
-import asyncio
 from ocpp.routing import on
 from ocpp.v16 import ChargePoint as cp
-from ocpp.v16.enums import RemoteStartStopStatus, ClearChargingProfileStatus
+from ocpp.v16.enums import Reason, TriggerMessageStatus, MessageTrigger, RemoteStartStopStatus, ClearChargingProfileStatus, ReadingContext, ValueFormat, Measurand, Location, UnitOfMeasure
 from ocpp.v16 import call_result, call
 
 from constants import CHARGE_POINT_MODEL, CHARGE_POINT_VENDOR, ID_CARGADOR
@@ -50,9 +49,25 @@ class MyChargePoint(cp):
         return response
 
     # Función que envía un mensaje de MeterValues al Central System
-    async def send_meter_values(self, meter_values):
+    async def send_meter_values(self, connector_id, meter_value):
+        sampled_value = [
+            {
+                "value": meter_value,
+                "context": ReadingContext.sample_periodic.value,
+                "format": ValueFormat.raw.value,
+                "measurand": Measurand.energy_active_import_register.value,
+                "location": Location.outlet.value,
+                "unit": UnitOfMeasure.kwh.value
+            }
+        ]
         request = call.MeterValues(
-            meter_value=meter_values
+            connector_id=connector_id,
+            meter_value=[
+                {
+                    "timestamp": datetime.now().isoformat(),
+                    "sampled_value": sampled_value
+                }
+            ],
         )
         response = await self.call(request)
         return response
@@ -69,13 +84,14 @@ class MyChargePoint(cp):
         return response
 
     # Función que envía un mensaje de StopTransaction al Central System
-    async def send_stop_transaction(self, meter_stop, timestamp, transaction_id, reason=None, id_tag=None):
-        request = call.StopTransactionPayload(
+    async def send_stop_transaction(self, meter_stop, timestamp, transaction_id, reason=None, id_tag=None, transaction_data=None):
+        request = call.StopTransaction(
             meter_stop=meter_stop,
             timestamp=timestamp,
             transaction_id=transaction_id,
-            reason=reason,
-            id_tag=id_tag
+            reason=Reason.remote,
+            id_tag=id_tag,
+            transaction_data=transaction_data
         )
         response = await self.call(request)
         return response
@@ -96,6 +112,7 @@ class MyChargePoint(cp):
 
     # RECEPCIÓN DE MENSAJES DESDE EL CENTRAL SYSTEM
     # Función para crear un cola de mensajes
+
     def __init__(self, *args, queue, **kwargs):
         super().__init__(*args, **kwargs)
         self.queue = queue
@@ -133,5 +150,29 @@ class MyChargePoint(cp):
 
         # Devolver un resultado
         return call_result.RemoteStartTransaction(
+            status=RemoteStartStopStatus.accepted
+        )
+
+    # Función que maneja la recepción de un mensaje Trigger Message
+    @on('TriggerMessage')
+    async def on_trigger_message(self, requested_message: MessageTrigger, connector_id: int = None):
+        print(f'Received TriggerMessage for {requested_message}')
+        # Almacenar los datos en la cola
+        await self.queue.put(('TriggerMessage', requested_message, connector_id))
+        # Devolver un resultado
+        return call_result.TriggerMessage(
+            status=TriggerMessageStatus.accepted
+        )
+
+    # Función que maneja la recepción de un mensaje RemoteStopTransaction
+    @on('RemoteStopTransaction')
+    async def on_remote_stop_transaction(self, transaction_id):
+        print(
+            f'Received RemoteStopTransaction request for transaction_id: {transaction_id}')
+        # Almacenar los datos en la cola
+        await self.queue.put(('RemoteStopTransaction', transaction_id))
+
+        # Devolver un resultado
+        return call_result.RemoteStopTransaction(
             status=RemoteStartStopStatus.accepted
         )

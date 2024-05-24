@@ -6,23 +6,36 @@ from ocpp_communication.charge_point import MyChargePoint
 
 data_store = None  # Inicializar data_store
 start_transaction = False  # Variable para iniciar la transacción
+stop_transaction = False  # Variable para detener la transacción
 id_tag = None
-connector_id = None
+connector_id = 0
+transaction_id = None
+send_meter_reading = False
 
 
 async def handle_queue(queue):
-    global data_store, start_transaction, id_tag, connector_id
+    global data_store, start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
     while True:
         if not queue.empty():
             data = await queue.get()
             print(f'data: {data}')
-            if 'RemoteStartTransaction' == data[0]:
+            if data[0] == 'RemoteStartTransaction':
                 start_transaction = True
                 id_tag = data[1]
                 connector_id = data[2]
+            elif data[0] == 'TriggerMessage':
+                if data[1] == 'MeterValues':
+                    send_meter_reading = True
+                    if data[2] is not None:
+                        connector_id = data[2]
+            elif data[0] == 'RemoteStopTransaction':
+                transaction_id = data[1]
+                stop_transaction = True
             else:
+                send_meter_reading = False
                 start_transaction = False
-                data_store = data  # Almacenar los datos en una lista global
+                stop_transaction = False
+            data_store = data  # Almacenar los datos en una lista global
         await asyncio.sleep(1)  # Esperar un poco antes de verificar nuevamente
 
 
@@ -35,7 +48,9 @@ async def keep_hearbeat(charge_point, interval):
 
 
 async def main():
-    global data_store, start_transaction, id_tag, connector_id
+    meter_reading = 10
+    counter = 11
+    global data_store, start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
     try:
         # Crear una cola
         queue = asyncio.Queue()
@@ -66,17 +81,49 @@ async def main():
             print(f'status response: {status_notification_response}')
 
             while True:
+                start_transaction_response = None
                 if start_transaction == True:
                     # Enviar un mensaje StartTransaction
                     start_transaction_response = await charge_point.send_start_transaction(
                         connector_id=connector_id,
-                        meter_start=10,
+                        meter_start=meter_reading,
                         id_tag=id_tag,
                         timestamp=datetime.now().isoformat(),
                     )
-                    print(start_transaction_response)
+                    print(
+                        f'start_transaction_response: {start_transaction_response}')
                     start_transaction = False
+                    if start_transaction_response.id_tag_info['status'] == 'Accepted':
+                        counter = 0
 
+                if send_meter_reading == True or counter == 10:
+                    # Enviar un mensaje MeterValues
+                    meter_reading_str = str(meter_reading)
+                    meter_values_response = await charge_point.send_meter_values(
+                        connector_id=connector_id,
+                        # transaction_id=start_transaction_response.transactionId,
+                        meter_value=meter_reading_str,
+                    )
+                    print(f'meter_values_response: {meter_values_response}')
+                    counter = 0
+                    meter_reading += 5
+                    send_meter_reading = False
+                    print(f'meter_value: {meter_reading_str}')
+                    print(type(meter_reading_str))
+                if counter < 10:
+                    counter += 1
+                if stop_transaction == True:
+                    # Enviar un mensaje StopTransaction
+                    stop_transaction_response = await charge_point.send_stop_transaction(
+                        meter_stop=meter_reading,
+                        transaction_id=transaction_id,
+                        timestamp=datetime.now().isoformat(),
+                    )
+                    print(
+                        f'stop_transaction_response: {stop_transaction_response}')
+                    print(f'meter_stop: {meter_reading}')
+                    stop_transaction = False
+                    counter = 11
                 await asyncio.sleep(1)
     except KeyboardInterrupt:
         await ws.close()
