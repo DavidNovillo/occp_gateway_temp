@@ -98,18 +98,15 @@ async def main():
 
                 if send_meter_reading == True or counter == 10:
                     # Enviar un mensaje MeterValues
-                    meter_reading_str = str(meter_reading)
                     meter_values_response = await charge_point.send_meter_values(
                         connector_id=connector_id,
-                        # transaction_id=start_transaction_response.transactionId,
-                        meter_value=meter_reading_str,
+                        meter_value=meter_reading,
                     )
                     print(f'meter_values_response: {meter_values_response}')
                     counter = 0
-                    meter_reading += 5
+                    meter_reading += 2
                     send_meter_reading = False
-                    print(f'meter_value: {meter_reading_str}')
-                    print(type(meter_reading_str))
+                    print(f'meter_value: {meter_reading}')
                 if counter < 10:
                     counter += 1
                 if stop_transaction == True:

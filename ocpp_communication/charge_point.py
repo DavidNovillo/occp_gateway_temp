@@ -2,7 +2,7 @@
 from datetime import datetime
 from ocpp.routing import on
 from ocpp.v16 import ChargePoint as cp
-from ocpp.v16.enums import Reason, TriggerMessageStatus, MessageTrigger, RemoteStartStopStatus, ClearChargingProfileStatus, ReadingContext, ValueFormat, Measurand, Location, UnitOfMeasure
+from ocpp.v16.enums import Reason, TriggerMessageStatus, MessageTrigger, RemoteStartStopStatus, ClearChargingProfileStatus, ReadingContext, ValueFormat, Measurand, Location, UnitOfMeasure, Phase
 from ocpp.v16 import call_result, call
 
 from constants import CHARGE_POINT_MODEL, CHARGE_POINT_VENDOR, ID_CARGADOR
@@ -50,14 +50,16 @@ class MyChargePoint(cp):
 
     # Función que envía un mensaje de MeterValues al Central System
     async def send_meter_values(self, connector_id, meter_value):
+        meter_value = 10
         sampled_value = [
             {
-                "value": meter_value,
-                "context": ReadingContext.sample_periodic.value,
-                "format": ValueFormat.raw.value,
+                "value": "123.45",  # str(meter_value),
+                "context": ReadingContext.sample_periodic.value,  # El contexto de la lectura
+                "format": ValueFormat.raw.value,  # El formato del valor
                 "measurand": Measurand.energy_active_import_register.value,
-                "location": Location.outlet.value,
-                "unit": UnitOfMeasure.kwh.value
+                "phase": Phase.l1.value,  # La fase a la que se refiere la lectura
+                "location": Location.inlet.value,  # La ubicación donde se toma la medición
+                "unit": UnitOfMeasure.kwh.value  # La unidad de medida
             }
         ]
         request = call.MeterValues(
