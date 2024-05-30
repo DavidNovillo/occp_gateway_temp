@@ -2,7 +2,7 @@
 from datetime import datetime
 from ocpp.routing import on
 from ocpp.v16 import ChargePoint as cp
-from ocpp.v16.enums import Reason, TriggerMessageStatus, MessageTrigger, RemoteStartStopStatus, ClearChargingProfileStatus, ReadingContext, ValueFormat, Measurand, Location, UnitOfMeasure, Phase
+from ocpp.v16.enums import Reason, ConfigurationStatus, TriggerMessageStatus, MessageTrigger, RemoteStartStopStatus, ClearChargingProfileStatus, ReadingContext, ValueFormat, Measurand, Location, UnitOfMeasure, Phase
 from ocpp.v16 import call_result, call
 
 from constants import CHARGE_POINT_MODEL, CHARGE_POINT_VENDOR, ID_CARGADOR
@@ -32,7 +32,7 @@ class MyChargePoint(cp):
 
     # Función que envía un mensaje de Authorize al Central System
     async def send_authorize(self, id_tag):
-        request = call.AuthorizePayload(
+        request = call.Authorize(
             id_tag=id_tag
         )
         response = await self.call(request)
@@ -49,29 +49,37 @@ class MyChargePoint(cp):
         return response
 
     # Función que envía un mensaje de MeterValues al Central System
-    async def send_meter_values(self, connector_id, meter_value):
-        meter_value = 10
+    async def send_meter_values(self, connector_id, meter_value, timestamp, transaction_id):
         sampled_value = [
             {
-                "value": "123.45",  # str(meter_value),
-                "context": ReadingContext.sample_periodic.value,  # El contexto de la lectura
+                "value": str(meter_value),
+                "context": ReadingContext.sample_periodic.value,
                 "format": ValueFormat.raw.value,  # El formato del valor
                 "measurand": Measurand.energy_active_import_register.value,
-                "phase": Phase.l1.value,  # La fase a la que se refiere la lectura
-                "location": Location.inlet.value,  # La ubicación donde se toma la medición
-                "unit": UnitOfMeasure.kwh.value  # La unidad de medida
+                # "phase": Phase.l1_l2.value,  # La fase de la medición
+                # "location": Location.inlet.value,  # La ubicación de la medición
+                "unit": UnitOfMeasure.wh.value  # La unidad de medida
+            },
+            {
+                "value": "2.5",
+                "context": "Sample.Periodic",
+                "format": "Raw",
+                "measurand": "Power.Active.Import",
+                "unit": "kW"
             }
         ]
         request = call.MeterValues(
             connector_id=connector_id,
+            transaction_id=transaction_id,
             meter_value=[
                 {
-                    "timestamp": datetime.now().isoformat(),
+                    "timestamp": timestamp,
                     "sampled_value": sampled_value
                 }
             ],
         )
         response = await self.call(request)
+        print(sampled_value)
         return response
 
     # Función que envía un mensaje de StartTransaction al Central System
@@ -177,4 +185,18 @@ class MyChargePoint(cp):
         # Devolver un resultado
         return call_result.RemoteStopTransaction(
             status=RemoteStartStopStatus.accepted
+        )
+
+    # Función que maneja la recepción de un mensaje ChangeConfiguration
+    @on('ChangeConfiguration')
+    async def on_change_configuration(self, key, value, **kwargs):
+        print(
+            f'Received ChangeConfiguration request for key: {key} with value: {value}')
+
+        # Store the data in the queue
+        await self.queue.put(('ChangeConfiguration', key, value))
+
+        # Return a result
+        return call_result.ChangeConfiguration(
+            status="Accepted"
         )
