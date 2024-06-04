@@ -1,11 +1,29 @@
+# ================================================================#
+# Código creado por @TekkuEc para Condor Energy en Ecuador
+# Versión: 3.XXy
+# Desarrollador: David Novillo
+# Loja, Ecuador - Mayo 2024
+# ===================== www.tekku.com.ec =========================#
+
 import websockets
 import asyncio
 from datetime import datetime, timezone
+import json
+import serial
+import os
+from termcolor import colored
 
-from ocpp_communication.charge_point import MyChargePoint
+from ocpp_communication.charge_point import MyChargePoint, save_keys, load_keys
+from logger.logger_creator import custom_logger
+from charger_communication.serial_communication import comunicacion_serial_cargador, comunicacion_serial_medidor
+from constants import (TRAMA_CARGAR, TRAMA_DETENER, TRAMA_INICIALIZAR,
+                       TRAMA_MEDIDOR_CONSUMO, TRAMA_MEDIDOR_POTENCIA, WS_URL, NUM_CARGADOR, ID_CARGADOR)
 
-data_store = None  # Inicializar data_store
-start_transaction = False  # Variable para iniciar la transacción
+# Importaciones de prueba
+from tests.comunicacion_serial_test import test_serial_cargador, test_serial_medidor
+
+# Variables globales
+remote_start_transaction = False  # Variable para iniciar la transacción
 stop_transaction = False  # Variable para detener la transacción
 id_tag = None
 connector_id = 0
@@ -14,13 +32,14 @@ send_meter_reading = False
 
 
 async def handle_queue(queue):
-    global data_store, start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
+    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
+    data = None
     while True:
         if not queue.empty():
             data = await queue.get()
             print(f'data: {data}')
             if data[0] == 'RemoteStartTransaction':
-                start_transaction = True
+                remote_start_transaction = True
                 id_tag = data[1]
                 connector_id = data[2]
             elif data[0] == 'TriggerMessage':
@@ -33,9 +52,8 @@ async def handle_queue(queue):
                 stop_transaction = True
             else:
                 send_meter_reading = False
-                start_transaction = False
+                remote_start_transaction = False
                 stop_transaction = False
-            data_store = data  # Almacenar los datos en una lista global
         await asyncio.sleep(1)  # Esperar un poco antes de verificar nuevamente
 
 
@@ -48,112 +66,200 @@ async def keep_hearbeat(charge_point, interval):
 
 
 async def main():
-    time_interval = 30
-    meter_reading = 210
-    counter = time_interval + 1
-    global data_store, start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
+    version = "3.00a"  # versión del programa
+
+    # Se crea el logger
+    logger = custom_logger()
+    logger.info(colored(f"\n\nIniciando programa...", attrs=[
+                "bold", "blink"], color="light_green"))
+    logger.info(colored(f"Versión: {version}",
+                attrs=["bold"], color="light_green"))
+    logger.info(colored(f"Punto de carga: {NUM_CARGADOR}\n", attrs=[
+                "bold"], color="light_green"))
+    logger.info(colored(f"ID: {ID_CARGADOR}\n",
+                attrs=["bold"], color="light_green"))
+
+    # Asignación de pines GPIO para encender y apagar las luces piloto
+    # TODO: Revisar si es que es necesario
+
+    # Configuración de la comunicación serial con el cargador
     try:
-        # Crear una cola
-        queue = asyncio.Queue()
+        ser = serial.Serial("/dev/ttyUSB0", baudrate=9600,
+                            parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS, timeout=0.5)
+        ser.reset_output_buffer()
+        ser.reset_input_buffer()
+    except:
+        logger.error("Revise el modulo USB - RS-485 del cargador")
 
-        # Establecimiento de la conexión WebSocket con el Central System
-        async with websockets.connect('wss://app.tridenstechnology.com/ev-charge/gw-comm/condor-energy/prueba_loja', subprotocols=['ocpp1.6']) as ws:
+    # Configuración de la comunicación serial con el medidor
+    try:
+        ser_medidor = serial.Serial("/dev/ttyUSB1", baudrate=9600, parity=serial.PARITY_NONE,
+                                    stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
+        ser_medidor.reset_output_buffer()
+        ser_medidor.reset_input_buffer()
+    except:
+        logger.error("Revise el modulo USB - RS-485 del medidor")
 
-            # Crear una instancia de la clase MyChargePoint
-            charge_point = MyChargePoint('prueba_loja', ws, queue=queue)
+    # Función para limpiar la consola
+    def clear():
+        return os.system("clear")
 
-            # Iniciar charge_point.start() y handle_queue() en segundo plano
-            start_task = asyncio.create_task(charge_point.start())
-            queue_task = asyncio.create_task(handle_queue(queue))
+    # Cargar valores de intervalos de tiempo desde el archivo keys.json
+    meter_values_interval = load_keys('MeterValuesInterval', 30)
+    heartbeat_interval = load_keys('HeartbeatInterval', 21600)
+    logger.info(
+        f"Intervalo de MeterValues: {meter_values_interval} s\nIntervalo de Heartbeat: {heartbeat_interval} s")
 
-            # Enviar un mensaje BootNotification y esperar la respuesta
-            boot_response = await charge_point.send_boot_notification()
-            print(f'interval: {boot_response.interval}')
+    # Declaración de variables globales
+    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
 
-            heartbeat_task = asyncio.create_task(
-                keep_hearbeat(charge_point, boot_response.interval))
+    # Inicialización de variables
 
-            # Enviar un mensaje StatusNotification
-            status_notification_response = await charge_point.send_status_notification(
-                connector_id=1,
-                status="Available",
-                error_code="NoError",
-            )
-            print(f'status response: {status_notification_response}')
+    cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+        ser, TRAMA_INICIALIZAR, logger)
+    energy_consumption = comunicacion_serial_medidor(
+        ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
+    potencia = comunicacion_serial_medidor(
+        ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
 
-            while True:
-                current_time = datetime.now(timezone.utc).strftime(
-                    '%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-                start_transaction_response = None
-                if start_transaction == True:
-                    # authorize_response = await charge_point.send_authorize(id_tag=id_tag)
-                    # print(f'authorize_response: {authorize_response}')
-                    # Enviar un mensaje StartTransaction
-                    status_notification_response = await charge_point.send_status_notification(
-                        connector_id=1,
-                        status="Preparing",
-                        error_code="NoError",
-                    )
-                    start_transaction_response = await charge_point.send_start_transaction(
-                        connector_id=connector_id,
-                        meter_start=meter_reading,
-                        id_tag=id_tag,
-                        timestamp=current_time,
-                    )
-                    print(
-                        f'start_transaction_response: {start_transaction_response}')
-                    start_transaction = False
-                    if start_transaction_response.id_tag_info['status'] == 'Accepted':
-                        counter = 0
-                        transaction_id = start_transaction_response.transaction_id
+    logger.info(f'Estado del cargador: {cp_status}')
+    logger.info(f'Porcentaje de batería: {battery_status}')
+    logger.info(f'Corriente: {corriente}')
+    logger.info(f'Voltaje: {voltaje}')
+    logger.info(f'Consumo de energía: {energy_consumption}')
+    logger.info(f'Potencia: {potencia}')
+
+    max_retries = 5
+    retry_delay = 5  # delay in seconds
+
+    for i in range(max_retries):
+        try:
+            # Crear una cola
+            queue = asyncio.Queue()
+
+            # Establecimiento de la conexión WebSocket con el Central System
+            async with websockets.connect(WS_URL, subprotocols=['ocpp1.6']) as ws:
+
+                # Crear una instancia de la clase MyChargePoint
+                charge_point = MyChargePoint('prueba_loja', ws, queue=queue)
+
+                # Iniciar charge_point.start() y handle_queue() en segundo plano
+                asyncio.create_task(charge_point.start())
+                asyncio.create_task(handle_queue(queue))
+
+                # Enviar un mensaje BootNotification y esperar la respuesta
+                boot_response = await charge_point.send_boot_notification()
+                logger.info(
+                    f'Boot Notification enviado\nRespuesta: {boot_response}')
+                save_keys('HeartbeatInterval', boot_response.interval)
+                heartbeat_interval = boot_response.interval
+
+                # Se inicia el envío constante del mensaje Heartbeat
+                asyncio.create_task(keep_hearbeat(
+                    charge_point, boot_response.interval))
+
+                # Se consulta el estado del cargador
+                cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+                    ser, TRAMA_INICIALIZAR, logger)
+
+                # TODO: Hacer una función que me retorne los status del Status Notification según el estado del cargador
+
+                # Enviar un mensaje StatusNotification
+                status_notification_response = await charge_point.send_status_notification(
+                    connector_id=1,
+                    status="Available",
+                    error_code="NoError",
+                )
+                print(f'status response: {status_notification_response}')
+
+                while True:
+                    current_time = datetime.now(timezone.utc).strftime(
+                        '%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+                    start_transaction_response = None
+                    if remote_start_transaction == True:
+                        # Enviar un mensaje StartTransaction
                         status_notification_response = await charge_point.send_status_notification(
                             connector_id=1,
-                            status="Charging",
+                            status="Preparing",
                             error_code="NoError",
                         )
+                        start_transaction_response = await charge_point.send_start_transaction(
+                            connector_id=connector_id,
+                            meter_start=meter_reading,
+                            id_tag=id_tag,
+                            timestamp=current_time,
+                        )
+                        print(
+                            f'start_transaction_response: {start_transaction_response}')
+                        remote_start_transaction = False
+                        if start_transaction_response.id_tag_info['status'] == 'Accepted':
+                            counter = 0
+                            transaction_id = start_transaction_response.transaction_id
+                            status_notification_response = await charge_point.send_status_notification(
+                                connector_id=1,
+                                status="Charging",
+                                error_code="NoError",
+                            )
 
-                if send_meter_reading == True or counter == time_interval:
-                    # Enviar un mensaje MeterValues
-                    meter_values_response = await charge_point.send_meter_values(
-                        connector_id=0,
-                        meter_value=meter_reading-210,
-                        timestamp=current_time,
-                        transaction_id=transaction_id,
-                    )
-                    counter = 0
-                    meter_reading += 500
-                    send_meter_reading = False
-                    # print(f'meter_value: {meter_reading}')
+                    if send_meter_reading == True or counter == meter_values_interval:
+                        # Enviar un mensaje MeterValues
+                        await charge_point.send_meter_values(
+                            connector_id=0,
+                            energy_value=energy_consumption,
+                            power_value=38,
+                            battery_value=50,
+                            timestamp=current_time,
+                            transaction_id=transaction_id,
+                        )
+                        counter = 0
+                        meter_reading += 200
+                        energy_consumption += 200
+                        send_meter_reading = False
 
-                if counter < time_interval:
-                    counter += 1
-                if stop_transaction == True:
-                    status_notification_response = await charge_point.send_status_notification(
-                        connector_id=connector_id,
-                        status="Finishing",
-                        error_code="NoError",
-                    )
-                    # Enviar un mensaje StopTransaction
-                    stop_transaction_response = await charge_point.send_stop_transaction(
-                        meter_stop=meter_reading,
-                        transaction_id=transaction_id,
-                        timestamp=current_time,
-                    )
-                    print(
-                        f'stop_transaction_response: {stop_transaction_response}')
-                    print(f'meter_stop: {meter_reading}')
-                    stop_transaction = False
-                    counter = time_interval + 1
+                    if counter < meter_values_interval:
+                        counter += 1
+                    if stop_transaction == True:
+                        status_notification_response = await charge_point.send_status_notification(
+                            connector_id=connector_id,
+                            status="Finishing",
+                            error_code="NoError",
+                        )
+                        # Enviar un mensaje StopTransaction
+                        stop_transaction_response = await charge_point.send_stop_transaction(
+                            meter_stop=meter_reading,
+                            transaction_id=transaction_id,
+                            timestamp=current_time,
+                        )
+                        print(
+                            f'stop_transaction_response: {stop_transaction_response}')
+                        print(f'meter_stop: {meter_reading}')
+                        stop_transaction = False
+                        counter = meter_values_interval + 1
 
-                    status_notification_response = await charge_point.send_status_notification(
-                        connector_id=connector_id,
-                        status="Available",
-                        error_code="NoError",
-                    )
-                await asyncio.sleep(1)
-    except KeyboardInterrupt:
-        await ws.close()
-        print("Program interrupted by user. Exiting...")
+                        status_notification_response = await charge_point.send_status_notification(
+                            connector_id=connector_id,
+                            status="Available",
+                            error_code="NoError",
+                        )
+                    await asyncio.sleep(1)
+
+        except websockets.exceptions.ConnectionClosed as e:
+            logger.error(
+                f"La conexión WebSocket se cerró inesperadamente: {e}")
+        except websockets.exceptions.InvalidURI as e:
+            logger.error(f"La URI proporcionada no es válida: {e}")
+        except Exception as e:
+            logger.error(f"Ocurrió un error al intentar conectar: {e}")
+        except KeyboardInterrupt:
+            await ws.close()
+            print("Program interrupted by user. Exiting...")
+
+        logger.info(f"Reintentando conexión ({i+1}/{max_retries})...")
+        await asyncio.sleep(retry_delay)  # Espera antes de reintentar
+
+    if i == max_retries - 1:  # Si se alcanzó el número máximo de intentos
+        logger.info(
+            "Se alcanzó el número máximo de intentos de conexión. Reintentando...")
 
 if __name__ == '__main__':
     asyncio.run(main())

@@ -1,7 +1,7 @@
 import time
 import struct
 
-from constants import TRAMA_INICIALIZAR, TRAMA_MEDIDOR
+from constants import TRAMA_INICIALIZAR
 
 # FUNCION PARA OBTENER EL ESTADO DEL CARGADOR
 
@@ -157,7 +157,7 @@ def comunicacion_serial_cargador(ser, trama, logger):
 # **********************************************************************************************************************#
 
 
-def comunicacion_serial_medidor(ser, logger):
+def comunicacion_serial_medidor(ser, logger, trama):
     data_in = b''
     intentos = 2
     trama_correcta = False
@@ -166,7 +166,7 @@ def comunicacion_serial_medidor(ser, logger):
     # Se tiene 2 intentos de comunicación con el medidor
     while (trama_correcta == False and intentos != 0):
         try:
-            ser.write(TRAMA_MEDIDOR)
+            ser.write(trama)
         except Exception as e:
             logger.error('Problema al enviar la trama al medidor')
             logger.error(e)
@@ -181,9 +181,13 @@ def comunicacion_serial_medidor(ser, logger):
             trama_correcta = True
             datos_utiles = data_in[3:7]
             valor = struct.unpack('>f', datos_utiles)
-            energia_entregada = round(valor[0], 3)
-            logger.info(
-                f'Valor actual del medidor: {energia_entregada} Kwh')
+            energia_entregada = round(valor[0], 2)
+            if trama[2] == 0x01:
+                logger.info(f'Energía: {energia_entregada} kWh')
+            elif trama[2] == 0x00:
+                logger.info(f'Potencia: {energia_entregada/1000} kW')
+            else:
+                logger.error(f'Respuesta del medidor: {energia_entregada}')
 
         else:
             energia_entregada = 'vacio'
@@ -203,7 +207,7 @@ def comunicacion_serial_medidor(ser, logger):
     if len(data_in) > 0 and trama_correcta == False:
         logger.error(f'Trama Desconocida desde el medidor: {data_in}')
         energia_entregada = 'vacio'
-        logger.error(f'Energía entregada: {energia_entregada}')
+        logger.error(f'Respuesta del medidor: {energia_entregada}')
         try:
             data_in = b''
             ser.reset_input_buffer()

@@ -4,6 +4,8 @@ import json
 with open('/home/pi/ID.json') as identificador:
     datos_identificador = json.load(identificador)
 
+WS_URL = 'wss://app.tridenstechnology.com/ev-charge/gw-comm/condor-energy/prueba_loja'
+
 ID_CARGADOR = str(datos_identificador['ID'])
 NUM_CARGADOR = str(datos_identificador['Estacion'])
 
@@ -16,8 +18,9 @@ TRAMA_DETENER = bytearray(
     b'\x23\x23\x00\x32\x40\x01\x10\x00\x0B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x8E\x0D\x0A')
 
 # Trama de comunicación con el medidor
-TRAMA_MEDIDOR = bytearray(b'\x01\x04\x01\x56\x00\x02\x90\x27')
+TRAMA_MEDIDOR_CONSUMO = bytearray(b'\x01\x04\x01\x56\x00\x02\x90\x27')
+TRAMA_MEDIDOR_POTENCIA = bytearray(b'\x01\x04\x00\x34\x00\x02\x79\xC2')
 
 # Modelo y fabricante del cargador
-CHARGE_POINT_MODEL=str(datos_identificador['Model'])
-CHARGE_POINT_VENDOR=str(datos_identificador['Vendor'])
+CHARGE_POINT_MODEL = str(datos_identificador['Model'])
+CHARGE_POINT_VENDOR = str(datos_identificador['Vendor'])

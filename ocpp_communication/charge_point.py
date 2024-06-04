@@ -1,11 +1,36 @@
-# charge_point.py
-from datetime import datetime
 from ocpp.routing import on
 from ocpp.v16 import ChargePoint as cp
 from ocpp.v16.enums import Reason, ConfigurationStatus, TriggerMessageStatus, MessageTrigger, RemoteStartStopStatus, ClearChargingProfileStatus, ReadingContext, ValueFormat, Measurand, Location, UnitOfMeasure, Phase
 from ocpp.v16 import call_result, call
+import json
 
 from constants import CHARGE_POINT_MODEL, CHARGE_POINT_VENDOR, ID_CARGADOR
+
+# Función para almacenar los keys en un archivo JSON
+
+
+def save_keys(key, value):
+    # Load existing keys
+    try:
+        with open('/home/pi/keys.json', 'r') as keys_file:
+            keys = json.load(keys_file)
+    except FileNotFoundError:
+        keys = {}
+    # Update key value
+    keys[key] = value
+    # Write keys back to file
+    with open('/home/pi/keys.json', 'w') as keys_file:
+        json.dump(keys, keys_file, indent=4)
+
+
+def load_keys(key, default_value):
+    # Load existing keys
+    try:
+        with open('/home/pi/keys.json', 'r') as keys_file:
+            keys = json.load(keys_file)
+    except FileNotFoundError:
+        keys = {}
+    return keys.get(key, default_value)
 
 
 class MyChargePoint(cp):
@@ -49,23 +74,28 @@ class MyChargePoint(cp):
         return response
 
     # Función que envía un mensaje de MeterValues al Central System
-    async def send_meter_values(self, connector_id, meter_value, timestamp, transaction_id):
+    async def send_meter_values(self, connector_id, energy_value, power_value, battery_value, timestamp, transaction_id):
         sampled_value = [
             {
-                "value": str(meter_value),
+                "value": str(energy_value),
                 "context": ReadingContext.sample_periodic.value,
-                "format": ValueFormat.raw.value,  # El formato del valor
+                "format": ValueFormat.raw.value,
                 "measurand": Measurand.energy_active_import_register.value,
-                # "phase": Phase.l1_l2.value,  # La fase de la medición
-                # "location": Location.inlet.value,  # La ubicación de la medición
-                "unit": UnitOfMeasure.wh.value  # La unidad de medida
+                "unit": UnitOfMeasure.wh.value
             },
             {
-                "value": "2.5",
-                "context": "Sample.Periodic",
-                "format": "Raw",
-                "measurand": "Power.Active.Import",
-                "unit": "kW"
+                "value": str(power_value),
+                "context": ReadingContext.sample_periodic.value,
+                "format": ValueFormat.raw.value,
+                "measurand": Measurand.power_active_import.value,
+                "unit": UnitOfMeasure.kw.value
+            },
+            {
+                "value": str(battery_value),
+                "context": ReadingContext.sample_periodic.value,
+                "format": ValueFormat.raw.value,
+                "measurand": Measurand.soc.value,
+                "unit": UnitOfMeasure.percent.value
             }
         ]
         request = call.MeterValues(
@@ -79,7 +109,6 @@ class MyChargePoint(cp):
             ],
         )
         response = await self.call(request)
-        print(sampled_value)
         return response
 
     # Función que envía un mensaje de StartTransaction al Central System
@@ -129,20 +158,16 @@ class MyChargePoint(cp):
 
     async def _handle_call(self, call):
         # Imprimir el tipo de mensaje
-        print(f'Received message: {call.action}')
-
+        print(f'Mensaje recibido: {call.action}')
         # Llamar al método original para procesar el mensaje
         await super()._handle_call(call)
 
     # Función que maneja la recepción de un mensaje Clear Charging Profile
     @on('ClearChargingProfile')
     async def on_clear_charging_profile(self, **kwargs):
-        # print('Received ClearChargingProfile request')
         print(f'Data: {kwargs}')
-
         # Almacenar los datos en la cola
         await self.queue.put(('ClearChargingProfile', kwargs))
-
         # Devolver un resultado
         return call_result.ClearChargingProfile(
             status=ClearChargingProfileStatus.accepted
@@ -151,13 +176,11 @@ class MyChargePoint(cp):
     # Función que maneja la recepción de un mensaje Remote Start Transaction
     @on('RemoteStartTransaction')
     async def remote_start_transaction(self, id_tag, connector_id, **kwargs):
-        # print('Received RemoteStartTransaction request')
         print(f'id_tag: {id_tag}')
         print(f'connector_id: {connector_id}')
         print(f'Additional data: {kwargs}')
         # Almacenar los datos en la cola
         await self.queue.put(('RemoteStartTransaction', id_tag, connector_id, kwargs))
-
         # Devolver un resultado
         return call_result.RemoteStartTransaction(
             status=RemoteStartStopStatus.accepted
@@ -181,7 +204,6 @@ class MyChargePoint(cp):
             f'Received RemoteStopTransaction request for transaction_id: {transaction_id}')
         # Almacenar los datos en la cola
         await self.queue.put(('RemoteStopTransaction', transaction_id))
-
         # Devolver un resultado
         return call_result.RemoteStopTransaction(
             status=RemoteStartStopStatus.accepted
@@ -190,12 +212,11 @@ class MyChargePoint(cp):
     # Función que maneja la recepción de un mensaje ChangeConfiguration
     @on('ChangeConfiguration')
     async def on_change_configuration(self, key, value, **kwargs):
-        print(
-            f'Received ChangeConfiguration request for key: {key} with value: {value}')
-
-        # Store the data in the queue
+        print(f'Received ChangeConfiguration key: {key} with value: {value}')
+        # Almacenar los keys en el archivo keys.json
+        save_keys(key, value)
+        # Almacenar los datos en la cola
         await self.queue.put(('ChangeConfiguration', key, value))
-
         # Return a result
         return call_result.ChangeConfiguration(
             status="Accepted"

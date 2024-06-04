@@ -1,5 +1,5 @@
 # ================================================================#
-# Código creado por @TekkuEc para BYD en Ecuador
+# Código creado por @TekkuEc para Condor Energy en Ecuador
 # Versión: 3.XXy
 # Desarrollador: David Novillo
 # Loja, Ecuador - Mayo 2024
@@ -8,7 +8,6 @@ import os
 import subprocess
 import time
 import serial
-import json
 from ocpp.routing import on
 from ocpp.v16 import ChargePoint as cp
 from ocpp.v16.enums import Action
@@ -71,7 +70,6 @@ async def main():
                             parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS, timeout=0.5)
         ser.reset_output_buffer()
         ser.reset_input_buffer()
-
     except:
         logger.error("Revise el modulo USB - RS-485 del cargador")
 
@@ -100,34 +98,23 @@ async def main():
         "voltaje": 0,
     }
 
-    # Bandera para enviar la trama de iniciar cargar una sola vez
-    band_cargar = False
-    # Bandera para saber si se perdió la conexión a internet
-    sin_conexion = False
-    # Indicador de finalizacion de carga normal
-    fin_carga = False
-    # Indicador del estado del cargador
-    estado_cargador = "Vacio"
-    # Variable con el valor del porcentaje de carga
-    porcentaje_carga = 0
-    # Variable con el valor de la corriente medida
-    corriente = 0
-    # Variable con el valor del voltaje medido
-    voltaje = 0
-    # Variable auxiliar para el cálculo de la energía
-    energia_entregada_aux = 0.0
-    # Variable con el valor final en kWh que se ha consumido
-    energia_entregada = 0.0
+    band_cargar = False  # Bandera para enviar la trama de iniciar cargar una sola vez
+    sin_conexion = False  # Bandera para saber si se perdió la conexión a internet
+    fin_carga = False  # Indicador de finalizacion de carga normal
+    estado_cargador = "Vacio"  # Indicador del estado del cargador
+    porcentaje_carga = 0  # Variable con el valor del porcentaje de carga
+    corriente = 0  # Variable con el valor de la corriente medida
+    voltaje = 0  # Variable con el valor del voltaje medido
+    energia_entregada_aux = 0.0  # Variable auxiliar para el cálculo de la energía
+    energia_entregada = 0.0  # Variable con el valor final en kWh que se ha consumido
     # Variable con el valor en kWh del medidor al inicio de la carga
     energia_entregada_inicial = 0.0
     # Variable con el valor en kWh del medidor al terminar la carga
     energia_entregada_final = 0.0
     # Variable auxiliar del valor kWh cuando se reinicia el medidor
     energia_entregada_vieja = 0.0
-    # Indicador de como se finalizo la carga
-    indicadorFinalizacion = ""
-    # Bandera para que se ejecute solo 1 vez el comienzo del initiateTransaction
-    band_init = 0
+    indicadorFinalizacion = ""  # Indicador de como se finalizo la carga
+    band_init = 0  # Bandera para que se ejecute solo 1 vez el comienzo del initiateTransaction
     band_tiempo = 0
     band_recarga = 0
     hora_inicio = time.strftime("%H:%M")
