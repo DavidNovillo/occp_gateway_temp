@@ -20,7 +20,7 @@ from constants import (TRAMA_CARGAR, TRAMA_DETENER, TRAMA_INICIALIZAR,
                        TRAMA_MEDIDOR_CONSUMO, TRAMA_MEDIDOR_POTENCIA, WS_URL, NUM_CARGADOR, ID_CARGADOR)
 
 # Importaciones de prueba
-from tests.comunicacion_serial_test import test_serial_cargador, test_serial_medidor
+from tests.comunicacion_serial_test import test_serial_cargador
 
 # Variables globales
 remote_start_transaction = False  # Variable para iniciar la transacción
@@ -29,6 +29,7 @@ id_tag = None
 connector_id = 0
 transaction_id = None
 send_meter_reading = False
+logger = custom_logger()
 
 
 async def handle_queue(queue):
@@ -58,18 +59,21 @@ async def handle_queue(queue):
 
 
 async def keep_hearbeat(charge_point, interval):
+    global logger
     while True:
         # Enviar un mensaje Heartbeat y esperar la respuesta
         heartbeat_response = await charge_point.send_heartbeat()
-        print(heartbeat_response)
+        logger.info(f'Heartbeat enviado\nRespuesta: {heartbeat_response}')
         await asyncio.sleep(interval)
 
 
 async def main():
+    # Declaración de variables globales
+    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger
     version = "3.00a"  # versión del programa
 
     # Se crea el logger
-    logger = custom_logger()
+
     logger.info(colored(f"\n\nIniciando programa...", attrs=[
                 "bold", "blink"], color="light_green"))
     logger.info(colored(f"Versión: {version}",
@@ -82,27 +86,25 @@ async def main():
     # Asignación de pines GPIO para encender y apagar las luces piloto
     # TODO: Revisar si es que es necesario
 
-    # Configuración de la comunicación serial con el cargador
-    try:
-        # ser = serial.Serial("/dev/ttyUSB0", baudrate=9600, parity = serial.PARITY_NONE, bytesize = serial.EIGHTBITS, timeout = 0.5)
-        ser = serial.Serial("/dev/ttyS3", baudrate=9600, parity=serial.PARITY_NONE,
-                            bytesize=serial.EIGHTBITS, timeout=0.5)
-        ser.reset_output_buffer()
-        ser.reset_input_buffer()
-    except:
-        logger.error(
-            colored("Revise el modulo USB - RS-485 del cargador", color="red"))
+    # # Configuración de la comunicación serial con el cargador
+    # try:
+    #     ser = serial.Serial("/dev/ttyUSB0", baudrate=9600,
+    #                         parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS, timeout=0.5)
+    #     ser.reset_output_buffer()
+    #     ser.reset_input_buffer()
+    # except:
+    #     logger.error(
+    #         colored("Revise el modulo USB - RS-485 del cargador", color="red"))
 
-    # Configuración de la comunicación serial con el medidor
-    try:
-        # ser_medidor = serial.Serial("/dev/ttyUSB1", baudrate=9600, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
-        ser_medidor = serial.Serial("/dev/ttyS4", baudrate=9600, parity=serial.PARITY_NONE,
-                                    stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
-        ser_medidor.reset_output_buffer()
-        ser_medidor.reset_input_buffer()
-    except:
-        logger.error(
-            colored("Revise el modulo USB - RS-485 del medidor", color="red"))
+    # # Configuración de la comunicación serial con el medidor
+    # try:
+    #     ser_medidor = serial.Serial("/dev/ttyUSB1", baudrate=9600, parity=serial.PARITY_NONE,
+    #                                 stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
+    #     ser_medidor.reset_output_buffer()
+    #     ser_medidor.reset_input_buffer()
+    # except:
+    #     logger.error(
+    #         colored("Revise el modulo USB - RS-485 del medidor", color="red"))
 
     # Función para limpiar la consola
     def clear():
@@ -114,17 +116,19 @@ async def main():
     logger.info(
         f"Intervalo de MeterValues: {meter_values_interval} s\nIntervalo de Heartbeat: {heartbeat_interval} s")
 
-    # Declaración de variables globales
-    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
-
     # Inicialización de variables
 
-    cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
-        ser, TRAMA_INICIALIZAR, logger)
-    energy_consumption = comunicacion_serial_medidor(
-        ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
-    potencia = comunicacion_serial_medidor(
-        ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
+    # cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+    #     ser, TRAMA_INICIALIZAR, logger)
+    # energy_consumption = comunicacion_serial_medidor(
+    #     ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
+    # potencia = comunicacion_serial_medidor(
+    #     ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
+
+    cp_status, battery_status, corriente, voltaje = test_serial_cargador(
+        'Standby')
+    energy_consumption = 1100
+    potencia = 0
 
     logger.info(f'Estado del cargador: {cp_status}')
     logger.info(f'Porcentaje de batería: {battery_status}')
@@ -135,6 +139,7 @@ async def main():
 
     max_retries = 5
     retry_delay = 5  # delay in seconds
+    counter = meter_values_interval + 1
 
     for i in range(max_retries):
         try:
@@ -163,21 +168,24 @@ async def main():
                     charge_point, boot_response.interval))
 
                 # Se consulta el estado del cargador
-                cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
-                    ser, TRAMA_INICIALIZAR, logger)
+                # cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+                #     ser, TRAMA_INICIALIZAR, logger)
+
+                cp_status, battery_status, corriente, voltaje = test_serial_cargador(
+                    'StandBy')
 
                 # Función que retorna los status del Status Notification según el estado del cargador
                 status = estados_status_notification(cp_status)
 
                 # Enviar un mensaje StatusNotification
-                status_notification_response = await charge_point.send_status_notification(
+                await charge_point.send_status_notification(
                     connector_id=connector_id,
                     status=status[0],
                     error_code=status[1],
                     info=status[2],
                 )
                 logger.info(
-                    f'Status Notification enviado: {status}\nRespuesta: {status_notification_response}')
+                    f'Status Notification enviado: {status}')
 
                 while True:
                     current_time = datetime.now(timezone.utc).strftime(
@@ -185,7 +193,7 @@ async def main():
                     # start_transaction_response = None
                     if remote_start_transaction == True:
                         # Enviar un mensaje StartTransaction
-                        status_notification_response = await charge_point.send_status_notification(
+                        await charge_point.send_status_notification(
                             connector_id=1,
                             status="Preparing",
                             error_code="NoError",

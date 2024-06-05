@@ -1,6 +1,3 @@
-from ocpp_communication.charge_point import MyChargePoint
-
-
 def test_serial_cargador(accion):
     if accion == 'pistola conectada':
         (estado_cargador, porcentaje_carga,
@@ -9,9 +6,5 @@ def test_serial_cargador(accion):
         (estado_cargador, porcentaje_carga,
          corriente, voltaje) = 'Cargando', 20, 58, 380
     else:
-        (estado_cargador, porcentaje_carga, corriente, voltaje) = 'Standby', 0, 0, 0
+        (estado_cargador, porcentaje_carga, corriente, voltaje) = 'StandBy', 0, 0, 0
     return estado_cargador, porcentaje_carga, corriente, voltaje
-
-
-def test_serial_medidor(valor):
-    return valor

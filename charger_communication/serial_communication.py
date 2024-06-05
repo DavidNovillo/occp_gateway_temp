@@ -49,7 +49,7 @@ def estados_status_notification(dato):
     elif (dato == 'Sobrecalentamiento'):
         return ('SuspendedEVSE', 'HighTemperature', 'Estado del cargador: Sobrecalentamiento')
     elif (dato == 'Falla de reinicio de contactor'):
-        return ('SuspendedEVSE', 'PowerSwitchFailure', 'Estado del cargador: Falla de reinicio de contactor')
+        return ('SuspendedEVSE', 'PowerSwitchFailure', 'Estado: Falla de reinicio de contactor')
     elif (dato == 'Sobrecarga de corriente'):
         return ('SuspendedEVSE', 'OverCurrentFailure', 'Estado del cargador: Sobrecarga de corriente')
     elif (dato == 'Pistola Conectada Fin de Carga'):
@@ -57,7 +57,7 @@ def estados_status_notification(dato):
     elif (dato == 'Trama Desconocida'):
         return ('Unavailable', 'InternalError', 'Estado del cargador: Trama desconocida')
     else:
-        return ('Unavailable', 'InternalError', 'Estado del cargador: Desconocido - Sin respuesta del cargador')
+        return ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
 
 
 def comunicacion_serial_cargador(ser, trama, logger):

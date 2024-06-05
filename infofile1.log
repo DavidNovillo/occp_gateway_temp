@@ -70,3 +70,194 @@ Iniciando programa...[0m
 2024-06-04 22:30:37 - ERROR - [31mRevise el modulo USB - RS-485 del medidor[0m
 2024-06-04 22:30:37 - INFO - Intervalo de MeterValues: 30 s
 Intervalo de Heartbeat: 21600 s
+2024-06-04 23:00:10 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:00:10 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:00:10 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:00:10 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:00:10 - ERROR - [31mRevise el modulo USB - RS-485 del medidor[0m
+2024-06-04 23:00:10 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:00:10 - INFO - Estado del cargador: Standby
+2024-06-04 23:00:10 - INFO - Porcentaje de batería: 0
+2024-06-04 23:00:10 - INFO - Corriente: 0
+2024-06-04 23:00:10 - INFO - Voltaje: 0
+2024-06-04 23:00:10 - INFO - Consumo de energía: 1100
+2024-06-04 23:00:10 - INFO - Potencia: 0
+2024-06-04 23:00:11 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:00:10.939Z', interval=21600, status='Accepted')
+2024-06-04 23:00:11 - ERROR - Ocurrió un error al intentar conectar: name 'ser' is not defined
+2024-06-04 23:00:11 - INFO - Reintentando conexión (1/5)...
+2024-06-04 23:00:17 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:00:16.980Z', interval=21600, status='Accepted')
+2024-06-04 23:00:17 - ERROR - Ocurrió un error al intentar conectar: name 'ser' is not defined
+2024-06-04 23:00:17 - INFO - Reintentando conexión (2/5)...
+2024-06-04 23:00:23 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:00:22.982Z', interval=21600, status='Accepted')
+2024-06-04 23:00:23 - ERROR - Ocurrió un error al intentar conectar: name 'ser' is not defined
+2024-06-04 23:00:23 - INFO - Reintentando conexión (3/5)...
+2024-06-04 23:00:29 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:00:29.011Z', interval=21600, status='Accepted')
+2024-06-04 23:00:29 - ERROR - Ocurrió un error al intentar conectar: name 'ser' is not defined
+2024-06-04 23:00:29 - INFO - Reintentando conexión (4/5)...
+2024-06-04 23:01:33 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:01:33 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:01:33 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:01:33 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:01:33 - ERROR - [31mRevise el modulo USB - RS-485 del medidor[0m
+2024-06-04 23:01:33 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:01:33 - INFO - Estado del cargador: Standby
+2024-06-04 23:01:33 - INFO - Porcentaje de batería: 0
+2024-06-04 23:01:33 - INFO - Corriente: 0
+2024-06-04 23:01:33 - INFO - Voltaje: 0
+2024-06-04 23:01:33 - INFO - Consumo de energía: 1100
+2024-06-04 23:01:33 - INFO - Potencia: 0
+2024-06-04 23:01:34 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:01:34.271Z', interval=21600, status='Accepted')
+2024-06-04 23:01:34 - ERROR - Ocurrió un error al intentar conectar: TypeConstraintViolationError: Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12),  {'cause': "'Estado del cargador: Desconocido - Sin respuesta del cargador' is too long", 'ocpp_message': <Call - unique_id=f2a604b0-09db-4fc2-8e10-dce22f4e4aff, action=StatusNotification, payload={'connectorId': 0, 'errorCode': 'InternalError', 'status': 'Unavailable', 'info': 'Estado del cargador: Desconocido - Sin respuesta del cargador'}>}
+2024-06-04 23:01:34 - INFO - Reintentando conexión (1/5)...
+2024-06-04 23:03:05 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:03:05 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:03:05 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:03:05 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:03:05 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:03:05 - INFO - Estado del cargador: Standby
+2024-06-04 23:03:05 - INFO - Porcentaje de batería: 0
+2024-06-04 23:03:05 - INFO - Corriente: 0
+2024-06-04 23:03:05 - INFO - Voltaje: 0
+2024-06-04 23:03:05 - INFO - Consumo de energía: 1100
+2024-06-04 23:03:05 - INFO - Potencia: 0
+2024-06-04 23:03:06 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:03:06.334Z', interval=21600, status='Accepted')
+2024-06-04 23:03:06 - ERROR - Ocurrió un error al intentar conectar: TypeConstraintViolationError: Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12),  {'cause': "'Estado del cargador: Desconocido - Sin respuesta del cargador' is too long", 'ocpp_message': <Call - unique_id=fdcddc41-2710-4330-b96e-668e5d18f3ff, action=StatusNotification, payload={'connectorId': 0, 'errorCode': 'InternalError', 'status': 'Unavailable', 'info': 'Estado del cargador: Desconocido - Sin respuesta del cargador'}>}
+2024-06-04 23:03:06 - INFO - Reintentando conexión (1/5)...
+2024-06-04 23:03:12 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:03:12.301Z', interval=21600, status='Accepted')
+2024-06-04 23:03:12 - ERROR - Ocurrió un error al intentar conectar: TypeConstraintViolationError: Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12),  {'cause': "'Estado del cargador: Desconocido - Sin respuesta del cargador' is too long", 'ocpp_message': <Call - unique_id=ab5ef34b-93e5-446b-9ab3-daeb3e33fa2c, action=StatusNotification, payload={'connectorId': 0, 'errorCode': 'InternalError', 'status': 'Unavailable', 'info': 'Estado del cargador: Desconocido - Sin respuesta del cargador'}>}
+2024-06-04 23:03:12 - INFO - Reintentando conexión (2/5)...
+2024-06-04 23:05:44 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:05:44 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:05:44 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:05:44 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:05:44 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:05:44 - INFO - Estado del cargador: Standby
+2024-06-04 23:05:44 - INFO - Porcentaje de batería: 0
+2024-06-04 23:05:44 - INFO - Corriente: 0
+2024-06-04 23:05:44 - INFO - Voltaje: 0
+2024-06-04 23:05:44 - INFO - Consumo de energía: 1100
+2024-06-04 23:05:44 - INFO - Potencia: 0
+2024-06-04 23:06:14 - ERROR - Ocurrió un error al intentar conectar: Waited 30s for response on [2,"45b75be7-ebcf-41e6-973e-2fc388f3e0ba","BootNotification",{"chargePointModel":"20KWCharger","chargePointVendor":"BYD","chargeBoxSerialNumber":"00000004b8820ae","chargePointSerialNumber":"00000004b8820ae","firmwareVersion":"3.00a","meterSerialNumber":"12345678901234567890","meterType":"Single/Three Phase"}].
+2024-06-04 23:06:14 - INFO - Reintentando conexión (1/5)...
+2024-06-04 23:06:20 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:06:20.672Z', interval=21600, status='Accepted')
+2024-06-04 23:06:20 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+2024-06-04 23:06:21 - ERROR - Ocurrió un error al intentar conectar: local variable 'counter' referenced before assignment
+2024-06-04 23:06:21 - INFO - Reintentando conexión (2/5)...
+2024-06-04 23:07:32 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:07:32 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:07:32 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:07:32 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:07:32 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:07:32 - INFO - Estado del cargador: Standby
+2024-06-04 23:07:32 - INFO - Porcentaje de batería: 0
+2024-06-04 23:07:32 - INFO - Corriente: 0
+2024-06-04 23:07:32 - INFO - Voltaje: 0
+2024-06-04 23:07:32 - INFO - Consumo de energía: 1100
+2024-06-04 23:07:32 - INFO - Potencia: 0
+2024-06-04 23:07:32 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:07:32.704Z', interval=21600, status='Accepted')
+2024-06-04 23:07:32 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+2024-06-04 23:07:33 - ERROR - Ocurrió un error al intentar conectar: local variable 'counter' referenced before assignment
+2024-06-04 23:07:33 - INFO - Reintentando conexión (1/5)...
+2024-06-04 23:07:38 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:07:38.741Z', interval=21600, status='Accepted')
+2024-06-04 23:07:38 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+2024-06-04 23:07:39 - ERROR - Ocurrió un error al intentar conectar: local variable 'counter' referenced before assignment
+2024-06-04 23:07:39 - INFO - Reintentando conexión (2/5)...
+2024-06-04 23:07:44 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:07:44.810Z', interval=21600, status='Accepted')
+2024-06-04 23:07:45 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+2024-06-04 23:07:45 - ERROR - Ocurrió un error al intentar conectar: local variable 'counter' referenced before assignment
+2024-06-04 23:07:45 - INFO - Reintentando conexión (3/5)...
+2024-06-04 23:08:59 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:08:59 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:08:59 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:08:59 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:08:59 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:08:59 - INFO - Estado del cargador: Standby
+2024-06-04 23:08:59 - INFO - Porcentaje de batería: 0
+2024-06-04 23:08:59 - INFO - Corriente: 0
+2024-06-04 23:08:59 - INFO - Voltaje: 0
+2024-06-04 23:08:59 - INFO - Consumo de energía: 1100
+2024-06-04 23:08:59 - INFO - Potencia: 0
+2024-06-04 23:09:00 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:09:00.501Z', interval=21600, status='Accepted')
+2024-06-04 23:09:00 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+2024-06-04 23:10:29 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:10:29 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:10:29 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:10:29 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:10:29 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:10:29 - INFO - Estado del cargador: StandBy
+2024-06-04 23:10:29 - INFO - Porcentaje de batería: 0
+2024-06-04 23:10:29 - INFO - Corriente: 0
+2024-06-04 23:10:29 - INFO - Voltaje: 0
+2024-06-04 23:10:29 - INFO - Consumo de energía: 1100
+2024-06-04 23:10:29 - INFO - Potencia: 0
+2024-06-04 23:10:30 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:10:30.588Z', interval=21600, status='Accepted')
+2024-06-04 23:10:30 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-04 23:17:25 - INFO - [5m[1m[92m
+
+Iniciando programa...[0m
+2024-06-04 23:17:25 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-04 23:17:25 - INFO - [1m[92mPunto de carga: 1
+[0m
+2024-06-04 23:17:25 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-04 23:17:25 - INFO - Intervalo de MeterValues: 30 s
+Intervalo de Heartbeat: 21600 s
+2024-06-04 23:17:25 - INFO - Estado del cargador: StandBy
+2024-06-04 23:17:25 - INFO - Porcentaje de batería: 0
+2024-06-04 23:17:25 - INFO - Corriente: 0
+2024-06-04 23:17:25 - INFO - Voltaje: 0
+2024-06-04 23:17:25 - INFO - Consumo de energía: 1100
+2024-06-04 23:17:25 - INFO - Potencia: 0
+2024-06-04 23:17:26 - INFO - Boot Notification enviado
+Respuesta: BootNotification(current_time='2024-06-05T04:17:26.283Z', interval=21600, status='Accepted')
+2024-06-04 23:17:26 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-04 23:17:26 - INFO - Heartbeat enviado
+Respuesta: Heartbeat(current_time='2024-06-05T04:17:26.544Z')
