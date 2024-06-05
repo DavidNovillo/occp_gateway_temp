@@ -15,7 +15,7 @@ from termcolor import colored
 
 from ocpp_communication.charge_point import MyChargePoint, save_keys, load_keys
 from logger.logger_creator import custom_logger
-from charger_communication.serial_communication import comunicacion_serial_cargador, comunicacion_serial_medidor
+from charger_communication.serial_communication import comunicacion_serial_cargador, comunicacion_serial_medidor, estados_status_notification
 from constants import (TRAMA_CARGAR, TRAMA_DETENER, TRAMA_INICIALIZAR,
                        TRAMA_MEDIDOR_CONSUMO, TRAMA_MEDIDOR_POTENCIA, WS_URL, NUM_CARGADOR, ID_CARGADOR)
 
@@ -84,21 +84,25 @@ async def main():
 
     # Configuración de la comunicación serial con el cargador
     try:
-        ser = serial.Serial("/dev/ttyUSB0", baudrate=9600,
-                            parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS, timeout=0.5)
+        # ser = serial.Serial("/dev/ttyUSB0", baudrate=9600, parity = serial.PARITY_NONE, bytesize = serial.EIGHTBITS, timeout = 0.5)
+        ser = serial.Serial("/dev/ttyS3", baudrate=9600, parity=serial.PARITY_NONE,
+                            bytesize=serial.EIGHTBITS, timeout=0.5)
         ser.reset_output_buffer()
         ser.reset_input_buffer()
     except:
-        logger.error("Revise el modulo USB - RS-485 del cargador")
+        logger.error(
+            colored("Revise el modulo USB - RS-485 del cargador", color="red"))
 
     # Configuración de la comunicación serial con el medidor
     try:
-        ser_medidor = serial.Serial("/dev/ttyUSB1", baudrate=9600, parity=serial.PARITY_NONE,
+        # ser_medidor = serial.Serial("/dev/ttyUSB1", baudrate=9600, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
+        ser_medidor = serial.Serial("/dev/ttyS4", baudrate=9600, parity=serial.PARITY_NONE,
                                     stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
         ser_medidor.reset_output_buffer()
         ser_medidor.reset_input_buffer()
     except:
-        logger.error("Revise el modulo USB - RS-485 del medidor")
+        logger.error(
+            colored("Revise el modulo USB - RS-485 del medidor", color="red"))
 
     # Función para limpiar la consola
     def clear():
@@ -162,20 +166,23 @@ async def main():
                 cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
                     ser, TRAMA_INICIALIZAR, logger)
 
-                # TODO: Hacer una función que me retorne los status del Status Notification según el estado del cargador
+                # Función que retorna los status del Status Notification según el estado del cargador
+                status = estados_status_notification(cp_status)
 
                 # Enviar un mensaje StatusNotification
                 status_notification_response = await charge_point.send_status_notification(
-                    connector_id=1,
-                    status="Available",
-                    error_code="NoError",
+                    connector_id=connector_id,
+                    status=status[0],
+                    error_code=status[1],
+                    info=status[2],
                 )
-                print(f'status response: {status_notification_response}')
+                logger.info(
+                    f'Status Notification enviado: {status}\nRespuesta: {status_notification_response}')
 
                 while True:
                     current_time = datetime.now(timezone.utc).strftime(
                         '%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-                    start_transaction_response = None
+                    # start_transaction_response = None
                     if remote_start_transaction == True:
                         # Enviar un mensaje StartTransaction
                         status_notification_response = await charge_point.send_status_notification(

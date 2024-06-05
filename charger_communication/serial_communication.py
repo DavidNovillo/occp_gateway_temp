@@ -33,43 +33,31 @@ def estados_cargador(dato):
 # ==== FUNCION PARA CREAR EL ESTADO DEL CARGADOR PARA EL SERVIDOR ====#
 
 
-def estados_cargador_servidor(dato):
-    estado = {'estadoStandBy': False, 'estadoConexion': False,
-              'estadoCarga': False, 'estadoCargaCompleta': False, 'errores': ''}
+def estados_status_notification(dato):
     if (dato == 'StandBy'):
-        estado = {'estadoStandBy': True, 'estadoConexion': False,
-                  'estadoCarga': False, 'estadoCargaCompleta': False, 'errores': ''}
+        return ('Available', 'NoError', 'Estado del cargador: StandBy')
     elif (dato == 'Start'):
-        estado = {'estadoStandBy': False, 'estadoConexion': True,
-                  'estadoCarga': False, 'estadoCargaCompleta': False, 'errores': ''}
+        return ('Preparing', 'NoError', 'Estado del cargador: Start')
     elif (dato == 'Cargando'):
-        estado = {'estadoStandBy': False, 'estadoConexion': True,
-                  'estadoCarga': True, 'estadoCargaCompleta': False, 'errores': ''}
+        return ('Charging', 'NoError', 'Estado del cargador: Cargando')
     elif (dato == 'Carga Completa'):
-        estado = {'estadoStandBy': False, 'estadoConexion': True,
-                  'estadoCarga': False, 'estadoCargaCompleta': True, 'errores': ''}
+        return ('SuspendedEV', 'NoError', 'Estado del cargador: Carga Completa')
     elif (dato == 'Cargador en Falla'):
-        estado = {'estadoStandBy': False, 'estadoConexion': False, 'estadoCarga': False,
-                  'estadoCargaCompleta': False, 'errores': 'Error Cargador en Falla'}
+        return ('Faulted', 'InternalError', 'Estado del cargador: Cargador en Falla')
     elif (dato == 'Pistola Conectada'):
-        estado = {'estadoStandBy': False, 'estadoConexion': True,
-                  'estadoCarga': False, 'estadoCargaCompleta': False, 'errores': ''}
+        return ('Preparing', 'NoError', 'Estado del cargador: Pistola Conectada')
     elif (dato == 'Sobrecalentamiento'):
-        estado = {'estadoStandBy': False, 'estadoConexion': False, 'estadoCarga': False,
-                  'estadoCargaCompleta': False, 'errores': 'Error de sobrecalentamiento'}
+        return ('SuspendedEVSE', 'HighTemperature', 'Estado del cargador: Sobrecalentamiento')
     elif (dato == 'Falla de reinicio de contactor'):
-        estado = {'estadoStandBy': False, 'estadoConexion': False, 'estadoCarga': False,
-                  'estadoCargaCompleta': False, 'errores': 'Error en activacion del contactor'}
+        return ('SuspendedEVSE', 'PowerSwitchFailure', 'Estado del cargador: Falla de reinicio de contactor')
     elif (dato == 'Sobrecarga de corriente'):
-        estado = {'estadoStandBy': False, 'estadoConexion': True, 'estadoCarga': False,
-                  'estadoCargaCompleta': False, 'errores': 'Error de sobrecarga de corriente'}
+        return ('SuspendedEVSE', 'OverCurrentFailure', 'Estado del cargador: Sobrecarga de corriente')
     elif (dato == 'Pistola Conectada Fin de Carga'):
-        estado = {'estadoStandBy': False, 'estadoConexion': True,
-                  'estadoCarga': False, 'estadoCargaCompleta': False, 'errores': ''}
+        return ('Finishing', 'NoError', 'Estado del cargador: Pistola Conectada Fin de Carga')
+    elif (dato == 'Trama Desconocida'):
+        return ('Unavailable', 'InternalError', 'Estado del cargador: Trama desconocida')
     else:
-        return (estado)
-
-    return (estado)
+        return ('Unavailable', 'InternalError', 'Estado del cargador: Desconocido - Sin respuesta del cargador')
 
 
 def comunicacion_serial_cargador(ser, trama, logger):
