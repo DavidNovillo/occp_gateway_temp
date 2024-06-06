@@ -186,7 +186,7 @@ class MyChargePoint(cp):
         # Almacenar los datos en la cola
         await self.queue.put(('RemoteStartTransaction', id_tag, connector_id, kwargs))
         # Devolver un resultado
-        if self.info == 'StandBy' or self.info == 'Pistola Conectada':
+        if f or self.info == 'Pistola Conectada':
             print('Status: Accepted')
             return call_result.RemoteStartTransaction(status=RemoteStartStopStatus.accepted)
 

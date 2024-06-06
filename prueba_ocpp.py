@@ -114,11 +114,11 @@ async def main():
         return os.system("clear")
 
     # Función para verificar el estado del cargador
-    async def check_charger_status():
+    async def check_charger_status(should_pause):
         while True:
-            cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
-                ser, TRAMA_INICIALIZAR, logger)
             await asyncio.sleep(30)
+            if not should_pause[0]:
+                return comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger)
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys('MeterValuesInterval', 30)
@@ -145,6 +145,7 @@ async def main():
         try:
             # Crear una cola
             queue = asyncio.Queue()
+            should_pause = [False]
 
             # Establecimiento de la conexión WebSocket con el Central System
             async with websockets.connect(WS_URL, subprotocols=['ocpp1.6']) as ws:
@@ -155,6 +156,8 @@ async def main():
                 # Iniciar charge_point.start() y handle_queue() en segundo plano
                 asyncio.create_task(charge_point.start())
                 asyncio.create_task(handle_queue(queue))
+                # Se inicia la comunicación serial constante con el cargador
+                asyncio.create_task(check_charger_status(should_pause))
 
                 # Enviar un mensaje BootNotification y esperar la respuesta
                 boot_response = await charge_point.send_boot_notification()
@@ -166,9 +169,6 @@ async def main():
                 # Se inicia el envío constante del mensaje Heartbeat
                 asyncio.create_task(keep_hearbeat(
                     charge_point, boot_response.interval))
-
-                # Se inicia la comunicación serial constante con el cargador
-                asyncio.create_task(check_charger_status())
 
                 # Función que retorna los status del Status Notification según el estado del cargador
                 status = estados_status_notification(cp_status)
@@ -182,13 +182,20 @@ async def main():
                 )
                 logger.info(
                     f'Status Notification enviado: {status}')
-
+                should_pause[0] = True
                 while True:
+                    # Luego, cuando necesites pausar la corrutina:
+                    # should_pause[0] = False
+
+                    cp_status, battery_status, corriente, voltaje = await check_charger_status(should_pause)
+
                     current_time = datetime.now(timezone.utc).strftime(
                         '%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
 
                     # start_transaction_response = None
                     if remote_start_transaction == True:
+                        # Luego, cuando necesites pausar la corrutina:
+                        should_pause[0] = True
                         # Leer el estado del cargador y del medidor
                         cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
                             ser, TRAMA_INICIALIZAR, logger)
