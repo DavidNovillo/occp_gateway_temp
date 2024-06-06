@@ -147,12 +147,12 @@ def comunicacion_serial_cargador(ser, trama, logger):
 
 def comunicacion_serial_medidor(ser, logger, trama):
     data_in = b''
-    intentos = 2
+    intentos = 1
     trama_correcta = False
     energia_entregada = 0.0
 
     # Se tiene 2 intentos de comunicación con el medidor
-    while (trama_correcta == False and intentos != 0):
+    while (trama_correcta == False and intentos >= 0):
         try:
             ser.write(trama)
         except Exception as e:

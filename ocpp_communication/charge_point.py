@@ -34,8 +34,13 @@ def load_keys(key, default_value):
 
 
 class MyChargePoint(cp):
+    # Función para obtener recibir información desde el otro archivo
+    def set_info(self, info):
+        self.info = info
+
     # ENVÍO DE MENSAJES HACIA EL CENTRAL SYSTEM
     # Función que envía un mensaje de Boot Notification al Central System
+
     async def send_boot_notification(self):
         request = call.BootNotification(
             charge_point_model=CHARGE_POINT_MODEL,
@@ -117,7 +122,7 @@ class MyChargePoint(cp):
             connector_id=connector_id,
             id_tag=id_tag,
             timestamp=timestamp,
-            meter_start=meter_start
+            meter_start=int(meter_start*1000)
         )
         response = await self.call(request)
         return response
@@ -165,7 +170,6 @@ class MyChargePoint(cp):
     # Función que maneja la recepción de un mensaje Clear Charging Profile
     @on('ClearChargingProfile')
     async def on_clear_charging_profile(self, **kwargs):
-        print(f'Data: {kwargs}')
         # Almacenar los datos en la cola
         await self.queue.put(('ClearChargingProfile', kwargs))
         # Devolver un resultado
@@ -182,11 +186,16 @@ class MyChargePoint(cp):
         # Almacenar los datos en la cola
         await self.queue.put(('RemoteStartTransaction', id_tag, connector_id, kwargs))
         # Devolver un resultado
-        return call_result.RemoteStartTransaction(
-            status=RemoteStartStopStatus.accepted
-        )
+        if self.info == 'StandBy' or self.info == 'Pistola Conectada':
+            print('Status: Accepted')
+            return call_result.RemoteStartTransaction(status=RemoteStartStopStatus.accepted)
+
+        else:
+            print('Status: Rejected')
+            return call_result.RemoteStartTransaction(status=RemoteStartStopStatus.rejected)
 
     # Función que maneja la recepción de un mensaje Trigger Message
+
     @on('TriggerMessage')
     async def on_trigger_message(self, requested_message: MessageTrigger, connector_id: int = None):
         print(f'Received TriggerMessage for {requested_message}')

@@ -30,6 +30,7 @@ connector_id = 0
 transaction_id = None
 send_meter_reading = False
 logger = custom_logger()
+indent = '                             '  # Indentación para el logger
 
 
 async def handle_queue(queue):
@@ -38,7 +39,7 @@ async def handle_queue(queue):
     while True:
         if not queue.empty():
             data = await queue.get()
-            print(f'data: {data}')
+            logger.info(f'data: {data}')
             if data[0] == 'RemoteStartTransaction':
                 remote_start_transaction = True
                 id_tag = data[1]
@@ -59,26 +60,28 @@ async def handle_queue(queue):
 
 
 async def keep_hearbeat(charge_point, interval):
-    global logger
+    global logger, indent
     while True:
         # Enviar un mensaje Heartbeat y esperar la respuesta
         heartbeat_response = await charge_point.send_heartbeat()
-        logger.info(f'Heartbeat enviado\nRespuesta: {heartbeat_response}')
+        logger.info(
+            colored(f'Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}', color='light_yellow'))
         await asyncio.sleep(interval)
 
 
 async def main():
+
     # Declaración de variables globales
-    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger
+    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent
     version = "3.00a"  # versión del programa
 
     # Se crea el logger
 
-    logger.info(colored(f"\n\nIniciando programa...", attrs=[
+    logger.info(colored(f"Iniciando programa...", attrs=[
                 "bold", "blink"], color="light_green"))
     logger.info(colored(f"Versión: {version}",
                 attrs=["bold"], color="light_green"))
-    logger.info(colored(f"Punto de carga: {NUM_CARGADOR}\n", attrs=[
+    logger.info(colored(f"Punto de carga: {NUM_CARGADOR}", attrs=[
                 "bold"], color="light_green"))
     logger.info(colored(f"ID: {ID_CARGADOR}\n",
                 attrs=["bold"], color="light_green"))
@@ -86,56 +89,53 @@ async def main():
     # Asignación de pines GPIO para encender y apagar las luces piloto
     # TODO: Revisar si es que es necesario
 
-    # # Configuración de la comunicación serial con el cargador
-    # try:
-    #     ser = serial.Serial("/dev/ttyUSB0", baudrate=9600,
-    #                         parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS, timeout=0.5)
-    #     ser.reset_output_buffer()
-    #     ser.reset_input_buffer()
-    # except:
-    #     logger.error(
-    #         colored("Revise el modulo USB - RS-485 del cargador", color="red"))
+    # Configuración de la comunicación serial con el cargador
+    try:
+        ser = serial.Serial("/dev/ttyUSB0", baudrate=9600,
+                            parity=serial.PARITY_NONE, bytesize=serial.EIGHTBITS, timeout=0.5)
+        ser.reset_output_buffer()
+        ser.reset_input_buffer()
+    except:
+        logger.error(
+            colored("Revise el modulo USB - RS-485 del cargador", color="red"))
 
-    # # Configuración de la comunicación serial con el medidor
-    # try:
-    #     ser_medidor = serial.Serial("/dev/ttyUSB1", baudrate=9600, parity=serial.PARITY_NONE,
-    #                                 stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
-    #     ser_medidor.reset_output_buffer()
-    #     ser_medidor.reset_input_buffer()
-    # except:
-    #     logger.error(
-    #         colored("Revise el modulo USB - RS-485 del medidor", color="red"))
+    # Configuración de la comunicación serial con el medidor
+    try:
+        ser_medidor = serial.Serial("/dev/ttyUSB1", baudrate=9600, parity=serial.PARITY_NONE,
+                                    stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=0.3)
+        ser_medidor.reset_output_buffer()
+        ser_medidor.reset_input_buffer()
+    except:
+        logger.error(
+            colored("Revise el modulo USB - RS-485 del medidor", color="red"))
 
     # Función para limpiar la consola
     def clear():
         return os.system("clear")
 
+    # Función para verificar el estado del cargador
+    async def check_charger_status():
+        while True:
+            cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+                ser, TRAMA_INICIALIZAR, logger)
+            await asyncio.sleep(30)
+
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys('MeterValuesInterval', 30)
     heartbeat_interval = load_keys('HeartbeatInterval', 21600)
     logger.info(
-        f"Intervalo de MeterValues: {meter_values_interval} s\nIntervalo de Heartbeat: {heartbeat_interval} s")
+        f"Intervalo de MeterValues: {meter_values_interval} s\n{indent}Intervalo de Heartbeat: {heartbeat_interval} s")
 
     # Inicialización de variables
 
-    # cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
-    #     ser, TRAMA_INICIALIZAR, logger)
-    # energy_consumption = comunicacion_serial_medidor(
-    #     ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
-    # potencia = comunicacion_serial_medidor(
-    #     ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
+    cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+        ser, TRAMA_INICIALIZAR, logger)
+    energy_consumption = comunicacion_serial_medidor(
+        ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
+    potencia = comunicacion_serial_medidor(
+        ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
 
-    cp_status, battery_status, corriente, voltaje = test_serial_cargador(
-        'Standby')
-    energy_consumption = 1100
-    potencia = 0
-
-    logger.info(f'Estado del cargador: {cp_status}')
-    logger.info(f'Porcentaje de batería: {battery_status}')
-    logger.info(f'Corriente: {corriente}')
-    logger.info(f'Voltaje: {voltaje}')
-    logger.info(f'Consumo de energía: {energy_consumption}')
-    logger.info(f'Potencia: {potencia}')
+    logger.info(f'Estado del cargador: {cp_status}\n{indent}Estado de la batería: {battery_status}\n{indent}Corriente: {corriente}\n{indent}Voltaje: {voltaje}\n{indent}Consumo de energía: {energy_consumption}\n{indent}Potencia: {potencia}')
 
     max_retries = 5
     retry_delay = 5  # delay in seconds
@@ -159,7 +159,7 @@ async def main():
                 # Enviar un mensaje BootNotification y esperar la respuesta
                 boot_response = await charge_point.send_boot_notification()
                 logger.info(
-                    f'Boot Notification enviado\nRespuesta: {boot_response}')
+                    f'Boot Notification enviado\n{indent}Respuesta: {boot_response}')
                 save_keys('HeartbeatInterval', boot_response.interval)
                 heartbeat_interval = boot_response.interval
 
@@ -167,12 +167,8 @@ async def main():
                 asyncio.create_task(keep_hearbeat(
                     charge_point, boot_response.interval))
 
-                # Se consulta el estado del cargador
-                # cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
-                #     ser, TRAMA_INICIALIZAR, logger)
-
-                cp_status, battery_status, corriente, voltaje = test_serial_cargador(
-                    'StandBy')
+                # Se inicia la comunicación serial constante con el cargador
+                asyncio.create_task(check_charger_status())
 
                 # Función que retorna los status del Status Notification según el estado del cargador
                 status = estados_status_notification(cp_status)
@@ -190,31 +186,52 @@ async def main():
                 while True:
                     current_time = datetime.now(timezone.utc).strftime(
                         '%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+
                     # start_transaction_response = None
                     if remote_start_transaction == True:
-                        # Enviar un mensaje StartTransaction
+                        # Leer el estado del cargador y del medidor
+                        cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+                            ser, TRAMA_INICIALIZAR, logger)
+                        energy_consumption = comunicacion_serial_medidor(
+                            ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
+
+                        # Enviar el estado del cargador a la instancia de ChargePoint
+                        charge_point.set_info(cp_status)
+
+                        status = estados_status_notification(cp_status)
+
+                        # Enviar un mensaje StatusNotification
                         await charge_point.send_status_notification(
-                            connector_id=1,
-                            status="Preparing",
-                            error_code="NoError",
-                        )
-                        start_transaction_response = await charge_point.send_start_transaction(
                             connector_id=connector_id,
-                            meter_start=meter_reading,
-                            id_tag=id_tag,
-                            timestamp=current_time,
+                            status=status[0],
+                            error_code=status[1],
+                            info=status[2],
                         )
-                        print(
-                            f'start_transaction_response: {start_transaction_response}')
-                        remote_start_transaction = False
-                        if start_transaction_response.id_tag_info['status'] == 'Accepted':
-                            counter = 0
-                            transaction_id = start_transaction_response.transaction_id
-                            status_notification_response = await charge_point.send_status_notification(
-                                connector_id=1,
-                                status="Charging",
-                                error_code="NoError",
+                        logger.info(
+                            f'Status Notification enviado: {status} connector_id: {connector_id}')
+
+                        if cp_status == 'Pistola conectada':
+                            # Envío el estatus de 'Preparing'
+
+                            start_transaction_response = await charge_point.send_start_transaction(
+                                connector_id=connector_id,
+                                meter_start=energy_consumption,
+                                id_tag=id_tag,
+                                timestamp=current_time,
                             )
+                            logger.info(
+                                f'Start Transaction enviado\n{indent}Respuesta: {start_transaction_response}')
+
+                            remote_start_transaction = False
+
+                            if start_transaction_response.id_tag_info['status'] == 'Accepted':
+                                counter = 0
+                                transaction_id = start_transaction_response.transaction_id
+                                await charge_point.send_status_notification(
+                                    connector_id=1,
+                                    status="Charging",
+                                    error_code="NoError",
+                                )
 
                     if send_meter_reading == True or counter == meter_values_interval:
                         # Enviar un mensaje MeterValues
