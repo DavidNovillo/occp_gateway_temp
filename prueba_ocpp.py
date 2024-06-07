@@ -351,7 +351,7 @@ async def main():
                         send_once = True
                         should_pause[0] = False
 
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(2)
 
         except websockets.exceptions.ConnectionClosed as e:
             logger.error(
