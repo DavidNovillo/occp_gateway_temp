@@ -744,3 +744,655 @@ Respuesta: BootNotification(current_time='2024-06-05T22:14:57.908Z', interval=21
 2024-06-06 11:51:57 - INFO - [93mHeartbeat enviado
                              Respuesta: Heartbeat(current_time='2024-06-06T16:51:55.404Z')[0m
 2024-06-06 11:51:57 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 12:20:04 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 12:20:04 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 12:20:04 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 12:20:04 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 12:20:04 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 12:20:05 - ERROR - Sin respuesta del cargador
+2024-06-06 12:20:06 - ERROR - Sin respuesta del cargador
+2024-06-06 12:20:06 - ERROR - Sin respuesta del medidor
+2024-06-06 12:20:07 - ERROR - Sin respuesta del medidor
+2024-06-06 12:20:08 - ERROR - Sin respuesta del medidor
+2024-06-06 12:20:09 - ERROR - Sin respuesta del medidor
+2024-06-06 12:20:09 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: vacio
+                             Potencia: vacio
+2024-06-06 12:20:10 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T17:20:08.788Z', interval=21600, status='Accepted')
+2024-06-06 12:20:10 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+2024-06-06 12:20:10 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T17:20:08.998Z')[0m
+2024-06-06 12:20:11 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 12:20:40 - ERROR - Sin respuesta del cargador
+2024-06-06 12:20:41 - ERROR - Sin respuesta del cargador
+2024-06-06 12:20:42 - ERROR - Sin respuesta del cargador
+2024-06-06 12:20:43 - ERROR - Sin respuesta del cargador
+2024-06-06 12:21:15 - ERROR - Sin respuesta del cargador
+2024-06-06 12:21:16 - ERROR - Sin respuesta del cargador
+2024-06-06 12:21:48 - ERROR - Sin respuesta del cargador
+2024-06-06 12:21:50 - ERROR - Sin respuesta del cargador
+2024-06-06 12:22:22 - ERROR - Sin respuesta del cargador
+2024-06-06 12:22:23 - ERROR - Sin respuesta del cargador
+2024-06-06 12:22:55 - ERROR - Sin respuesta del cargador
+2024-06-06 12:22:56 - ERROR - Sin respuesta del cargador
+2024-06-06 15:24:01 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 15:24:01 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 15:24:01 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 15:24:01 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 15:24:01 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 15:24:02 - ERROR - Sin respuesta del cargador
+2024-06-06 15:24:03 - ERROR - Sin respuesta del cargador
+2024-06-06 15:24:03 - ERROR - Sin respuesta del medidor
+2024-06-06 15:24:04 - ERROR - Sin respuesta del medidor
+2024-06-06 15:24:05 - ERROR - Sin respuesta del medidor
+2024-06-06 15:24:06 - ERROR - Sin respuesta del medidor
+2024-06-06 15:24:06 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: vacio
+                             Potencia: vacio
+2024-06-06 15:24:07 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T20:24:05.839Z', interval=21600, status='Accepted')
+2024-06-06 15:24:07 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 15:24:08 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T20:24:06.074Z')[0m
+2024-06-06 15:24:08 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 15:24:38 - ERROR - Sin respuesta del cargador
+2024-06-06 15:24:39 - ERROR - Sin respuesta del cargador
+2024-06-06 15:25:10 - ERROR - Sin respuesta del cargador
+2024-06-06 15:25:11 - ERROR - Sin respuesta del cargador
+2024-06-06 15:25:42 - ERROR - Sin respuesta del cargador
+2024-06-06 15:25:43 - ERROR - Sin respuesta del cargador
+2024-06-06 15:26:14 - ERROR - Sin respuesta del cargador
+2024-06-06 15:26:15 - ERROR - Sin respuesta del cargador
+2024-06-06 15:26:46 - ERROR - Sin respuesta del cargador
+2024-06-06 15:26:47 - ERROR - Sin respuesta del cargador
+2024-06-06 15:27:18 - ERROR - Sin respuesta del cargador
+2024-06-06 15:27:19 - ERROR - Sin respuesta del cargador
+2024-06-06 15:27:50 - ERROR - Sin respuesta del cargador
+2024-06-06 15:27:51 - ERROR - Sin respuesta del cargador
+2024-06-06 15:28:22 - ERROR - Sin respuesta del cargador
+2024-06-06 15:28:23 - ERROR - Sin respuesta del cargador
+2024-06-06 15:28:37 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 15:28:37 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 15:28:37 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 15:28:37 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 15:28:37 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 15:28:38 - ERROR - Sin respuesta del cargador
+2024-06-06 15:28:39 - ERROR - Sin respuesta del cargador
+2024-06-06 15:28:40 - ERROR - Sin respuesta del medidor
+2024-06-06 15:28:41 - ERROR - Sin respuesta del medidor
+2024-06-06 15:28:41 - ERROR - Sin respuesta del medidor
+2024-06-06 15:28:42 - ERROR - Sin respuesta del medidor
+2024-06-06 15:28:43 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: vacio
+                             Potencia: vacio
+2024-06-06 15:28:44 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T20:28:42.067Z', interval=21600, status='Accepted')
+2024-06-06 15:28:44 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 15:28:44 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T20:28:42.311Z')[0m
+2024-06-06 15:28:44 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 15:29:14 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:15 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:30 - INFO - data: ('RemoteStartTransaction', '770576819', 1, {})
+2024-06-06 15:29:31 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:32 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:33 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:34 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:34 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:29:39 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:40 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:40 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:41 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:42 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:29:46 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:47 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:48 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:49 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:50 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:29:54 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:55 - ERROR - Sin respuesta del cargador
+2024-06-06 15:29:56 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:57 - ERROR - Sin respuesta del medidor
+2024-06-06 15:29:57 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:30:02 - ERROR - Sin respuesta del cargador
+2024-06-06 15:30:03 - ERROR - Sin respuesta del cargador
+2024-06-06 15:30:04 - ERROR - Sin respuesta del medidor
+2024-06-06 15:30:04 - ERROR - Sin respuesta del medidor
+2024-06-06 15:30:05 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:30:10 - ERROR - Sin respuesta del cargador
+2024-06-06 15:30:11 - ERROR - Sin respuesta del cargador
+2024-06-06 15:30:11 - ERROR - Sin respuesta del medidor
+2024-06-06 15:30:12 - ERROR - Sin respuesta del medidor
+2024-06-06 15:30:13 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:30:17 - ERROR - Sin respuesta del cargador
+2024-06-06 15:30:18 - ERROR - Ocurrió un error al intentar conectar: 'Serial' object has no attribute 'SerialTimeoutException'
+2024-06-06 15:30:18 - INFO - Reintentando conexión (1/5)...
+2024-06-06 15:30:24 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T20:30:22.481Z', interval=21600, status='Accepted')
+2024-06-06 15:30:24 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 15:30:25 - ERROR - Sin respuesta del cargador
+2024-06-06 15:30:26 - ERROR - Sin respuesta del cargador
+2024-06-06 15:30:26 - ERROR - Sin respuesta del medidor
+2024-06-06 15:30:27 - ERROR - Sin respuesta del medidor
+2024-06-06 15:30:28 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 15:30:28 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T20:30:26.332Z')[0m
+2024-06-06 15:30:28 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:33:26 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 15:33:26 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 15:33:26 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 15:33:26 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 15:33:26 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 15:33:27 - ERROR - Sin respuesta del cargador
+2024-06-06 15:33:28 - ERROR - Sin respuesta del cargador
+2024-06-06 15:33:28 - ERROR - Sin respuesta del medidor
+2024-06-06 15:33:29 - ERROR - Sin respuesta del medidor
+2024-06-06 15:33:30 - ERROR - Sin respuesta del medidor
+2024-06-06 15:33:31 - ERROR - Sin respuesta del medidor
+2024-06-06 15:33:31 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: vacio
+                             Potencia: vacio
+2024-06-06 15:33:32 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T20:33:30.812Z', interval=21600, status='Accepted')
+2024-06-06 15:33:32 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 15:33:33 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T20:33:31.042Z')[0m
+2024-06-06 15:33:33 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 15:34:03 - ERROR - Sin respuesta del cargador
+2024-06-06 15:34:04 - ERROR - Sin respuesta del cargador
+2024-06-06 15:34:05 - INFO - data: ('RemoteStartTransaction', '770604216', 1, {})
+2024-06-06 15:34:06 - ERROR - Sin respuesta del cargador
+2024-06-06 15:34:07 - ERROR - Sin respuesta del cargador
+2024-06-06 15:34:07 - ERROR - Sin respuesta del medidor
+2024-06-06 15:34:08 - ERROR - Sin respuesta del medidor
+2024-06-06 15:34:09 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:34:13 - ERROR - Sin respuesta del cargador
+2024-06-06 15:34:14 - ERROR - Sin respuesta del cargador
+2024-06-06 15:34:15 - ERROR - Sin respuesta del medidor
+2024-06-06 15:34:16 - ERROR - Sin respuesta del medidor
+2024-06-06 15:34:17 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 15:38:24 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 15:38:24 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 15:38:24 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 15:38:24 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 15:38:24 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 15:38:25 - ERROR - Sin respuesta del cargador
+2024-06-06 15:38:26 - ERROR - Sin respuesta del cargador
+2024-06-06 15:38:27 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:27 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:28 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:29 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:30 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: vacio
+                             Potencia: vacio
+2024-06-06 15:38:31 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T20:38:29.036Z', interval=21600, status='Accepted')
+2024-06-06 15:38:31 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 15:38:31 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T20:38:29.307Z')[0m
+2024-06-06 15:38:31 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 15:38:47 - INFO - data: ('RemoteStartTransaction', '770632486', 1, {})
+2024-06-06 15:38:48 - ERROR - Sin respuesta del cargador
+2024-06-06 15:38:49 - ERROR - Sin respuesta del cargador
+2024-06-06 15:38:50 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:51 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:51 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:38:56 - ERROR - Sin respuesta del cargador
+2024-06-06 15:38:57 - ERROR - Sin respuesta del cargador
+2024-06-06 15:38:58 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:59 - ERROR - Sin respuesta del medidor
+2024-06-06 15:38:59 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:04 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:05 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:05 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:06 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:07 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:11 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:12 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:13 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:14 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:15 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:19 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:20 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:21 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:22 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:22 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:27 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:28 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:29 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:30 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:30 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:35 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:36 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:36 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:37 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:38 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:42 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:43 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:44 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:45 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:46 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:50 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:51 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:52 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:53 - ERROR - Sin respuesta del medidor
+2024-06-06 15:39:53 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:39:58 - ERROR - Sin respuesta del cargador
+2024-06-06 15:39:59 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:00 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:00 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:01 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:40:06 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:07 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:07 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:08 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:09 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:40:13 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:14 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:15 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:16 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:17 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:40:21 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:22 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:23 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:24 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:24 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:40:29 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:30 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:31 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:31 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:32 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:40:37 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:38 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:38 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:39 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:40 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:40:44 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:45 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:46 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:47 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:48 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:40:52 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:53 - ERROR - Sin respuesta del cargador
+2024-06-06 15:40:54 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:55 - ERROR - Sin respuesta del medidor
+2024-06-06 15:40:55 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:41:00 - ERROR - Sin respuesta del cargador
+2024-06-06 15:41:01 - ERROR - Sin respuesta del cargador
+2024-06-06 15:41:02 - ERROR - Sin respuesta del medidor
+2024-06-06 15:41:02 - ERROR - Sin respuesta del medidor
+2024-06-06 15:41:03 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 15:41:07 - ERROR - Sin respuesta del cargador
+2024-06-06 15:41:08 - ERROR - Sin respuesta del cargador
+2024-06-06 15:41:09 - ERROR - Sin respuesta del medidor
+2024-06-06 15:41:10 - ERROR - Sin respuesta del medidor
+2024-06-06 15:41:11 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy') connector_id: 1
+2024-06-06 16:03:39 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 16:03:39 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 16:03:39 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 16:03:39 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 16:03:39 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 16:03:39 - ERROR - Sin respuesta del cargador
+2024-06-06 16:03:40 - ERROR - Sin respuesta del cargador
+2024-06-06 16:03:41 - ERROR - Sin respuesta del medidor
+2024-06-06 16:03:42 - ERROR - Sin respuesta del medidor
+2024-06-06 16:03:43 - ERROR - Sin respuesta del medidor
+2024-06-06 16:03:43 - ERROR - Sin respuesta del medidor
+2024-06-06 16:03:44 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: vacio
+                             Potencia: vacio
+2024-06-06 16:03:45 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:03:43.349Z', interval=21600, status='Accepted')
+2024-06-06 16:03:45 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:03:45 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:03:43.603Z')[0m
+2024-06-06 16:03:46 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 16:04:08 - INFO - data: ('RemoteStartTransaction', '770784527', 1, {})
+2024-06-06 16:04:09 - ERROR - Sin respuesta del cargador
+2024-06-06 16:04:10 - ERROR - Sin respuesta del cargador
+2024-06-06 16:04:10 - ERROR - Sin respuesta del medidor
+2024-06-06 16:04:11 - ERROR - Sin respuesta del medidor
+2024-06-06 16:04:12 - INFO - Status Notification enviado: ('Preparing', 'NoError', 'Estado del cargador: Pistola Conectada') connector_id: 1
+2024-06-06 16:04:12 - ERROR - Ocurrió un error al intentar conectar: invalid literal for int() with base 10: 'vaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaci
+2024-06-06 16:04:12 - INFO - Reintentando conexión (1/5)...
+2024-06-06 16:04:18 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:04:16.339Z', interval=21600, status='Accepted')
+2024-06-06 16:04:18 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:04:19 - ERROR - Sin respuesta del cargador
+2024-06-06 16:04:20 - ERROR - Sin respuesta del cargador
+2024-06-06 16:04:20 - ERROR - Sin respuesta del medidor
+2024-06-06 16:04:21 - ERROR - Sin respuesta del medidor
+2024-06-06 16:04:22 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 16:04:22 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:04:20.204Z')[0m
+2024-06-06 16:04:22 - INFO - Status Notification enviado: ('Preparing', 'NoError', 'Estado del cargador: Pistola Conectada') connector_id: 1
+2024-06-06 16:04:22 - ERROR - Ocurrió un error al intentar conectar: invalid literal for int() with base 10: 'vaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaciovaci
+2024-06-06 16:04:22 - INFO - Reintentando conexión (2/5)...
+2024-06-06 16:22:55 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 16:22:55 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 16:22:55 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 16:22:55 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 16:22:55 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 16:22:56 - ERROR - Sin respuesta del cargador
+2024-06-06 16:22:57 - ERROR - Sin respuesta del cargador
+2024-06-06 16:22:58 - ERROR - Sin respuesta del medidor
+2024-06-06 16:22:59 - ERROR - Sin respuesta del medidor
+2024-06-06 16:22:59 - ERROR - Sin respuesta del medidor
+2024-06-06 16:23:00 - ERROR - Sin respuesta del medidor
+2024-06-06 16:23:01 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: 0
+                             Potencia: 0
+2024-06-06 16:23:02 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:23:00.200Z', interval=21600, status='Accepted')
+2024-06-06 16:23:02 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:23:02 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:23:00.454Z')[0m
+2024-06-06 16:23:03 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 16:23:19 - INFO - data: ('RemoteStartTransaction', '770899677', 1, {})
+2024-06-06 16:23:19 - ERROR - Sin respuesta del cargador
+2024-06-06 16:23:20 - ERROR - Sin respuesta del cargador
+2024-06-06 16:23:21 - ERROR - Sin respuesta del medidor
+2024-06-06 16:23:22 - ERROR - Sin respuesta del medidor
+2024-06-06 16:23:23 - INFO - Status Notification enviado: ('Preparing', 'NoError', 'Estado del cargador: Pistola Conectada') connector_id: 1
+2024-06-06 16:23:23 - INFO - Start Transaction enviado
+                             Respuesta: StartTransaction(transaction_id=10687, id_tag_info={'parent_id_tag': '770899677', 'status': 'Accepted'})
+2024-06-06 16:23:24 - INFO - data: ('TriggerMessage', 'MeterValues', None)
+2024-06-06 16:23:24 - ERROR - Ocurrió un error al intentar conectar: local variable 'meter_reading' referenced before assignment
+2024-06-06 16:23:24 - INFO - Reintentando conexión (1/5)...
+2024-06-06 16:23:30 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:23:28.592Z', interval=21600, status='Accepted')
+2024-06-06 16:23:30 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:23:30 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:23:28.848Z')[0m
+2024-06-06 16:23:31 - ERROR - Ocurrió un error al intentar conectar: local variable 'meter_reading' referenced before assignment
+2024-06-06 16:23:31 - INFO - Reintentando conexión (2/5)...
+2024-06-06 16:23:31 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 16:23:37 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:23:35.058Z', interval=21600, status='Accepted')
+2024-06-06 16:23:37 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:23:37 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:23:35.302Z')[0m
+2024-06-06 16:23:37 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 16:23:38 - INFO - data: ('RemoteStopTransaction', 10687)
+2024-06-06 16:23:39 - ERROR - Ocurrió un error al intentar conectar: local variable 'meter_reading' referenced before assignment
+2024-06-06 16:23:39 - INFO - Reintentando conexión (3/5)...
+2024-06-06 16:33:18 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 16:33:18 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 16:33:18 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 16:33:18 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 16:33:18 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 16:33:19 - ERROR - Sin respuesta del cargador
+2024-06-06 16:33:20 - ERROR - Sin respuesta del cargador
+2024-06-06 16:33:20 - ERROR - Sin respuesta del medidor
+2024-06-06 16:33:21 - ERROR - Sin respuesta del medidor
+2024-06-06 16:33:22 - ERROR - Sin respuesta del medidor
+2024-06-06 16:33:23 - ERROR - Sin respuesta del medidor
+2024-06-06 16:33:23 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: 0
+                             Potencia: 0
+2024-06-06 16:33:24 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:33:22.628Z', interval=21600, status='Accepted')
+2024-06-06 16:33:24 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:33:24 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:33:22.868Z')[0m
+2024-06-06 16:33:25 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 16:33:29 - INFO - data: ('RemoteStopTransaction', 10687)
+2024-06-06 16:33:55 - ERROR - Sin respuesta del cargador
+2024-06-06 16:33:56 - ERROR - Sin respuesta del cargador
+2024-06-06 16:34:01 - INFO - data: ('RemoteStartTransaction', '770963860', 1, {})
+2024-06-06 16:34:02 - ERROR - Sin respuesta del cargador
+2024-06-06 16:34:03 - ERROR - Sin respuesta del cargador
+2024-06-06 16:34:03 - ERROR - Sin respuesta del medidor
+2024-06-06 16:34:04 - ERROR - Sin respuesta del medidor
+2024-06-06 16:34:05 - INFO - Status Notification enviado: ('Preparing', 'NoError', 'Estado del cargador: Pistola Conectada') connector_id: 1
+2024-06-06 16:34:05 - INFO - Start Transaction enviado
+                             Respuesta: StartTransaction(transaction_id=10688, id_tag_info={'parent_id_tag': '770963860', 'status': 'Accepted'})
+2024-06-06 16:34:06 - INFO - data: ('TriggerMessage', 'MeterValues', None)
+2024-06-06 16:34:45 - INFO - data: ('RemoteStopTransaction', 10688)
+2024-06-06 16:48:29 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 16:48:29 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 16:48:29 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 16:48:29 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 16:48:29 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 16:48:29 - ERROR - Sin respuesta del cargador
+2024-06-06 16:48:30 - ERROR - Sin respuesta del cargador
+2024-06-06 16:48:31 - ERROR - Sin respuesta del medidor
+2024-06-06 16:48:32 - ERROR - Sin respuesta del medidor
+2024-06-06 16:48:32 - ERROR - Sin respuesta del medidor
+2024-06-06 16:48:33 - ERROR - Sin respuesta del medidor
+2024-06-06 16:48:34 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: 0
+                             Potencia: 0
+2024-06-06 16:48:35 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:48:33.207Z', interval=21600, status='Accepted')
+2024-06-06 16:48:35 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:48:35 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:48:33.453Z')[0m
+2024-06-06 16:48:36 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 16:48:57 - INFO - data: ('RemoteStartTransaction', '771053478', 1, {})
+2024-06-06 16:48:57 - ERROR - Sin respuesta del cargador
+2024-06-06 16:48:58 - ERROR - Sin respuesta del cargador
+2024-06-06 16:48:59 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:00 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:01 - INFO - Status Notification enviado: ('Preparing', 'NoError', 'Estado del cargador: Pistola Conectada') connector_id: 1
+2024-06-06 16:49:01 - INFO - [94mStart Transaction enviado
+                             Respuesta: StartTransaction(transaction_id=10690, id_tag_info={'parent_id_tag': '771053478', 'status': 'Accepted'})[0m
+2024-06-06 16:49:02 - INFO - data: ('TriggerMessage', 'MeterValues', None)
+2024-06-06 16:49:02 - ERROR - Sin respuesta del cargador
+2024-06-06 16:49:03 - ERROR - Sin respuesta del cargador
+2024-06-06 16:49:04 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:05 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:06 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:07 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:07 - INFO - [96mMeter Values enviado
+                             Energy: 0
+                             Power: 0
+                             Battery: 0[0m
+2024-06-06 16:49:38 - ERROR - Sin respuesta del cargador
+2024-06-06 16:49:39 - ERROR - Sin respuesta del cargador
+2024-06-06 16:49:40 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:40 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:41 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:42 - ERROR - Sin respuesta del medidor
+2024-06-06 16:49:43 - INFO - [96mMeter Values enviado
+                             Energy: 0
+                             Power: 0
+                             Battery: 0[0m
+2024-06-06 16:50:05 - INFO - data: ('RemoteStopTransaction', 10690)
+2024-06-06 16:50:05 - ERROR - Ocurrió un error al intentar conectar: TypeConstraintViolationError: Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12),  {'cause': "0.2 is not of type 'integer'", 'ocpp_message': <Call - unique_id=ff145552-03b1-4861-a401-73531486b47c, action=StopTransaction, payload={'meterStop': 0.2, 'timestamp': '2024-06-06T21:50:05.154Z', 'transactionId': 10690, 'reason': <Reason.remote: 'Remote'>}>}
+2024-06-06 16:50:05 - INFO - Reintentando conexión (1/5)...
+2024-06-06 16:50:11 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-06T21:50:09.260Z', interval=21600, status='Accepted')
+2024-06-06 16:50:11 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 16:50:11 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-06T21:50:09.498Z')[0m
+2024-06-06 16:50:11 - ERROR - Ocurrió un error al intentar conectar: TypeConstraintViolationError: Payload for Action is syntactically correct but at least one of the fields violates data type constraints (e.g. “somestring”: 12),  {'cause': "0.2 is not of type 'integer'", 'ocpp_message': <Call - unique_id=f45d958a-5521-4f38-ba0a-926f22750cdc, action=StopTransaction, payload={'meterStop': 0.2, 'timestamp': '2024-06-06T21:50:11.431Z', 'transactionId': 10690, 'reason': <Reason.remote: 'Remote'>}>}
+2024-06-06 16:50:11 - INFO - Reintentando conexión (2/5)...
+2024-06-06 16:50:12 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 22:46:45 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-06 22:46:45 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-06 22:46:45 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-06 22:46:45 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-06 22:46:45 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-06 22:46:46 - ERROR - Sin respuesta del cargador
+2024-06-06 22:46:47 - ERROR - Sin respuesta del cargador
+2024-06-06 22:46:48 - ERROR - Sin respuesta del medidor
+2024-06-06 22:46:49 - ERROR - Sin respuesta del medidor
+2024-06-06 22:46:49 - ERROR - Sin respuesta del medidor
+2024-06-06 22:46:50 - ERROR - Sin respuesta del medidor
+2024-06-06 22:46:51 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: 0
+                             Potencia: 0
+2024-06-06 22:46:52 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-07T03:46:52.008Z', interval=21600, status='Accepted')
+2024-06-06 22:46:52 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-06 22:46:52 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-07T03:46:52.247Z')[0m
+2024-06-06 22:46:52 - INFO - data: ('ClearChargingProfile', {})
+2024-06-06 22:47:22 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:23 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:31 - INFO - data: ('RemoteStartTransaction', '773205117', 1, {})
+2024-06-06 22:47:32 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:33 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:34 - ERROR - Sin respuesta del medidor
+2024-06-06 22:47:35 - ERROR - Sin respuesta del medidor
+2024-06-06 22:47:35 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador') connector_id: 1
+2024-06-06 22:47:35 - INFO - [94mStart Transaction enviado
+                             Respuesta: StartTransaction(transaction_id=10698, id_tag_info={'parent_id_tag': '773205117', 'status': 'Accepted'})[0m
+2024-06-06 22:47:36 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:37 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:37 - INFO - data: ('TriggerMessage', 'MeterValues', None)
+2024-06-06 22:47:41 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:42 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:46 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:47 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:51 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:52 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:56 - ERROR - Sin respuesta del cargador
+2024-06-06 22:47:57 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:01 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:02 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:06 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:07 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:11 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:12 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:14 - INFO - data: ('RemoteStopTransaction', 10698)
+2024-06-06 22:48:16 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:17 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:21 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:22 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:26 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:27 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:28 - INFO - data: ('RemoteStopTransaction', 10698)
+2024-06-06 22:48:31 - ERROR - Sin respuesta del cargador
+2024-06-06 22:48:32 - ERROR - Sin respuesta del cargador
+2024-06-07 10:40:58 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-07 10:40:58 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-07 10:40:58 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-07 10:40:58 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-07 10:40:58 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-07 10:40:58 - ERROR - Sin respuesta del cargador
+2024-06-07 10:40:59 - ERROR - Sin respuesta del cargador
+2024-06-07 10:41:00 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:01 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:02 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:03 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:03 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: 0
+                             Potencia: 0
+2024-06-07 10:41:04 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-07T15:41:03.596Z', interval=21600, status='Accepted')
+2024-06-07 10:41:04 - INFO - Status Notification enviado: ('Available', 'NoError', 'Estado del cargador: StandBy')
+2024-06-07 10:41:04 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-07T15:41:03.829Z')[0m
+2024-06-07 10:41:05 - INFO - data: ('ClearChargingProfile', {})
+2024-06-07 10:41:34 - ERROR - Sin respuesta del cargador
+2024-06-07 10:41:35 - ERROR - Sin respuesta del cargador
+2024-06-07 10:41:48 - INFO - data: ('RemoteStartTransaction', '777490647', 1, {})
+2024-06-07 10:41:48 - ERROR - Sin respuesta del cargador
+2024-06-07 10:41:49 - ERROR - Sin respuesta del cargador
+2024-06-07 10:41:50 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:51 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:52 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+                             Connector_id: 1
+2024-06-07 10:41:52 - INFO - [94mStart Transaction enviado
+                             Respuesta: StartTransaction(transaction_id=10715, id_tag_info={'parent_id_tag': '777490647', 'status': 'Accepted'})[0m
+2024-06-07 10:41:53 - INFO - data: ('TriggerMessage', 'MeterValues', None)
+2024-06-07 10:41:53 - ERROR - Sin respuesta del cargador
+2024-06-07 10:41:54 - ERROR - Sin respuesta del cargador
+2024-06-07 10:41:55 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:56 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:57 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:58 - ERROR - Sin respuesta del medidor
+2024-06-07 10:41:58 - INFO - [96mMeter Values enviado
+                             Energy: 0
+                             Power: 0
+                             Battery: 0[0m
+2024-06-07 10:42:04 - INFO - data: ('RemoteStopTransaction', 10715)
+2024-06-07 15:05:40 - INFO - [5m[1m[92mIniciando programa...[0m
+2024-06-07 15:05:40 - INFO - [1m[92mVersión: 3.00a[0m
+2024-06-07 15:05:40 - INFO - [1m[92mPunto de carga: 1[0m
+2024-06-07 15:05:40 - INFO - [1m[92mID: 00000004b8820ae
+[0m
+2024-06-07 15:05:40 - INFO - Intervalo de MeterValues: 30 s
+                             Intervalo de Heartbeat: 21600 s
+2024-06-07 15:05:40 - ERROR - Sin respuesta del cargador
+2024-06-07 15:05:41 - ERROR - Sin respuesta del cargador
+2024-06-07 15:05:42 - ERROR - Sin respuesta del medidor
+2024-06-07 15:05:43 - ERROR - Sin respuesta del medidor
+2024-06-07 15:05:44 - ERROR - Sin respuesta del medidor
+2024-06-07 15:05:44 - ERROR - Sin respuesta del medidor
+2024-06-07 15:05:45 - INFO - Estado del cargador: Desconocido
+                             Estado de la batería: 0
+                             Corriente: 0
+                             Voltaje: 0
+                             Consumo de energía: 0
+                             Potencia: 0
+2024-06-07 15:05:46 - INFO - Boot Notification enviado
+                             Respuesta: BootNotification(current_time='2024-06-07T20:05:44.716Z', interval=21600, status='Accepted')
+2024-06-07 15:05:46 - INFO - Status Notification enviado: ('Unavailable', 'InternalError', 'Estado: Desconocido - Sin respuesta del cargador')
+2024-06-07 15:05:46 - INFO - [93mHeartbeat enviado
+                             Respuesta: Heartbeat(current_time='2024-06-07T20:05:44.934Z')[0m
+2024-06-07 15:05:47 - INFO - data: ('ClearChargingProfile', {})
+2024-06-07 15:06:16 - ERROR - Sin respuesta del cargador
+2024-06-07 15:06:17 - ERROR - Sin respuesta del cargador
+2024-06-07 15:06:48 - ERROR - Sin respuesta del cargador
+2024-06-07 15:06:49 - ERROR - Sin respuesta del cargador
+2024-06-07 15:07:20 - ERROR - Sin respuesta del cargador
+2024-06-07 15:07:21 - ERROR - Sin respuesta del cargador

@@ -86,14 +86,14 @@ class MyChargePoint(cp):
                 "context": ReadingContext.sample_periodic.value,
                 "format": ValueFormat.raw.value,
                 "measurand": Measurand.energy_active_import_register.value,
-                "unit": UnitOfMeasure.wh.value
+                "unit": UnitOfMeasure.kwh.value
             },
             {
                 "value": str(power_value),
                 "context": ReadingContext.sample_periodic.value,
                 "format": ValueFormat.raw.value,
                 "measurand": Measurand.power_active_import.value,
-                "unit": UnitOfMeasure.kw.value
+                "unit": UnitOfMeasure.w.value
             },
             {
                 "value": str(battery_value),
@@ -130,7 +130,7 @@ class MyChargePoint(cp):
     # Función que envía un mensaje de StopTransaction al Central System
     async def send_stop_transaction(self, meter_stop, timestamp, transaction_id, reason=None, id_tag=None, transaction_data=None):
         request = call.StopTransaction(
-            meter_stop=meter_stop,
+            meter_stop=int(meter_stop*1000),
             timestamp=timestamp,
             transaction_id=transaction_id,
             reason=Reason.remote,
@@ -186,7 +186,7 @@ class MyChargePoint(cp):
         # Almacenar los datos en la cola
         await self.queue.put(('RemoteStartTransaction', id_tag, connector_id, kwargs))
         # Devolver un resultado
-        if f or self.info == 'Pistola Conectada':
+        if self.info == 'StandBy' or self.info == 'Pistola Conectada':
             print('Status: Accepted')
             return call_result.RemoteStartTransaction(status=RemoteStartStopStatus.accepted)
 

@@ -178,7 +178,7 @@ def comunicacion_serial_medidor(ser, logger, trama):
                 logger.error(f'Respuesta del medidor: {energia_entregada}')
 
         else:
-            energia_entregada = 'vacio'
+            energia_entregada = 0
             logger.error('Sin respuesta del medidor')
             try:
                 data_in = b''
@@ -194,7 +194,7 @@ def comunicacion_serial_medidor(ser, logger, trama):
 
     if len(data_in) > 0 and trama_correcta == False:
         logger.error(f'Trama Desconocida desde el medidor: {data_in}')
-        energia_entregada = 'vacio'
+        energia_entregada = 0
         logger.error(f'Respuesta del medidor: {energia_entregada}')
         try:
             data_in = b''
