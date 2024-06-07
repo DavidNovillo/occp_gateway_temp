@@ -51,9 +51,9 @@ def estados_status_notification(dato):
     elif (dato == 'Falla de reinicio de contactor'):
         return ('SuspendedEVSE', 'PowerSwitchFailure', 'Estado: Falla de reinicio de contactor')
     elif (dato == 'Sobrecarga de corriente'):
-        return ('SuspendedEVSE', 'OverCurrentFailure', 'Estado del cargador: Sobrecarga de corriente')
+        return ('SuspendedEVSE', 'OverCurrentFailure', 'Estado: Sobrecarga de corriente')
     elif (dato == 'Pistola Conectada Fin de Carga'):
-        return ('Finishing', 'NoError', 'Estado del cargador: Pistola Conectada Fin de Carga')
+        return ('Finishing', 'NoError', 'Estado: Pistola Conectada Fin de Carga')
     elif (dato == 'Trama Desconocida'):
         return ('Unavailable', 'InternalError', 'Estado del cargador: Trama desconocida')
     else:
