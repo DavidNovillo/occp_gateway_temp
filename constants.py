@@ -19,7 +19,7 @@ TRAMA_DETENER = bytearray(
 
 # Trama de comunicación con el medidor
 TRAMA_MEDIDOR_CONSUMO = bytearray(b'\x01\x04\x01\x56\x00\x02\x90\x27')
-TRAMA_MEDIDOR_POTENCIA = bytearray(b'\x01\x04\x00\x34\x00\x02\x79\xC2')
+TRAMA_MEDIDOR_POTENCIA = bytearray(b'\x01\x04\x00\x34\x00\x02\x30\x05')
 
 # Modelo y fabricante del cargador
 CHARGE_POINT_MODEL = str(datos_identificador['Model'])
