@@ -120,7 +120,7 @@ async def main():
     async def check_charger_status(should_pause, charge_point=None):
         nonlocal cp_status, battery_status, corriente, voltaje
         while True:
-            await asyncio.sleep(30)
+            await asyncio.sleep(60)
             if not should_pause[0]:
                 cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
                     ser, TRAMA_INICIALIZAR, logger)
@@ -233,6 +233,8 @@ async def main():
                         logger.info(colored(
                             f'Start Transaction enviado\n{indent}Respuesta: {start_transaction_response}', color='light_blue'))
 
+                        energy_consumption_start = energy_consumption
+
                         if start_transaction_response.id_tag_info['status'] == 'Accepted':
                             counter = 0
                             transaction_id = start_transaction_response.transaction_id
@@ -302,6 +304,7 @@ async def main():
                         # Detener la carga
                         cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
                             ser, TRAMA_DETENER, logger)
+
                         # Leer el estado del medidor
                         energy_consumption = comunicacion_serial_medidor(
                             ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
@@ -317,6 +320,10 @@ async def main():
                         logger.info(
                             f'Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}')
 
+                        # En caso de que se reinicie la cuenta del medidor
+                        if energy_consumption_start > energy_consumption:
+                            energy_consumption = 1000000 - energy_consumption_start + energy_consumption
+
                         # Enviar un mensaje StopTransaction
                         stop_transaction_response = await charge_point.send_stop_transaction(
                             meter_stop=energy_consumption,
@@ -329,11 +336,12 @@ async def main():
                         stop_transaction = False
 
                         # Esperar un poco antes de enviar el StatusNotification
-                        await asyncio.sleep(15)
+                        await asyncio.sleep(10)
 
-                        # Leer el estado del cargador y del medidor
-                        cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
-                            ser, TRAMA_INICIALIZAR, logger)
+                        while cp_status == 'Pistola Conectada Fin de Carga':
+                            cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+                                ser, TRAMA_INICIALIZAR, logger)
+                            await asyncio.sleep(3)
 
                         status = estados_status_notification(cp_status)
                         # Enviar un mensaje StatusNotification
@@ -351,6 +359,8 @@ async def main():
                         send_once = True
                         should_pause[0] = False
 
+                        # Limpiar la consola
+                        clear()
                     await asyncio.sleep(2)
 
         except websockets.exceptions.ConnectionClosed as e:

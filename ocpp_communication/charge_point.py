@@ -228,5 +228,5 @@ class MyChargePoint(cp):
         await self.queue.put(('ChangeConfiguration', key, value))
         # Return a result
         return call_result.ChangeConfiguration(
-            status="Accepted"
+            status=ConfigurationStatus.accepted
         )
