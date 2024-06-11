@@ -337,11 +337,18 @@ async def main():
 
                         # Esperar un poco antes de enviar el StatusNotification
                         await asyncio.sleep(10)
+                        cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+                            ser, TRAMA_INICIALIZAR, logger)
+
+                        # Comprobar si aún no se ha detenido la carga
+                        if cp_status == 'Cargando':
+                            cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
+                                ser, TRAMA_DETENER, logger)
 
                         while cp_status == 'Pistola Conectada Fin de Carga':
+                            await asyncio.sleep(3)
                             cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
                                 ser, TRAMA_INICIALIZAR, logger)
-                            await asyncio.sleep(3)
 
                         status = estados_status_notification(cp_status)
                         # Enviar un mensaje StatusNotification
