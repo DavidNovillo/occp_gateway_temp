@@ -14,7 +14,7 @@ def calculate_crc16(data):
 
 
 # Ejemplo de trama (en hexadecimal)
-trama_hex = bytearray([0x01, 0x04, 0x01, 0x56, 0x00, 0x02])
+trama_hex = bytearray([0x01, 0x04, 0x00, 0x34, 0x00, 0x02])
 
 # Calculamos el CRC-16/MODBUS
 crc = calculate_crc16(trama_hex)
