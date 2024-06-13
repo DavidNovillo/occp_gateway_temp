@@ -294,13 +294,13 @@ async def main():
                             transaction_id=transaction_id,
                         )
                         logger.info(colored(
-                            f'Meter Values enviado\n{indent}Energy: {energy_consumption}\n{indent}Power: {power}\n{indent}Battery: {battery_status}', color='light_cyan'))
+                            f'Meter Values enviado\n{indent}Energy: {energy_consumption} kWh\n{indent}Power: {power} W\n{indent}Battery: {battery_status}%', color='light_cyan'))
                         counter = 0
                         send_meter_reading = False
 
                     if counter < meter_values_interval:
                         counter += 1
-                    if stop_transaction == True:
+                    if stop_transaction == True or cp_status == 'Carga Completa' or battery_status == 100:
                         # Detener la carga
                         cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
                             ser, TRAMA_DETENER, logger)

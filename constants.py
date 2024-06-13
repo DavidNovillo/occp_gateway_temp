@@ -18,8 +18,12 @@ TRAMA_DETENER = bytearray(
     b'\x23\x23\x00\x32\x40\x01\x10\x00\x0B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x8E\x0D\x0A')
 
 # Trama de comunicación con el medidor
-TRAMA_MEDIDOR_CONSUMO = bytearray(b'\x01\x04\x01\x56\x00\x02\x90\x27')
-TRAMA_MEDIDOR_POTENCIA = bytearray(b'\x01\x04\x00\x34\x00\x02\x30\x05')
+TRAMA_MEDIDOR_CONSUMO = bytearray.fromhex(
+    datos_identificador['consumo_medidor'])
+TRAMA_MEDIDOR_POTENCIA = bytearray.fromhex(
+    datos_identificador['potencia_medidor'])
+# TRAMA_MEDIDOR_CONSUMO = bytearray(b'\x01\x04\x01\x56\x00\x02\x90\x27')
+# TRAMA_MEDIDOR_POTENCIA = bytearray(b'\x01\x04\x00\x34\x00\x02\x30\x05')
 
 # Modelo y fabricante del cargador
 CHARGE_POINT_MODEL = str(datos_identificador['Model'])
