@@ -331,7 +331,7 @@ async def main():
                             timestamp=current_time,
                         )
                         logger.info(colored(
-                            f'Stop Transaction enviado\n{indent}Meter stop:{energy_consumption}\n{indent}Respuesta: {stop_transaction_response}', color='light_magneta'))
+                            f'Stop Transaction enviado\n{indent}Meter stop:{energy_consumption}\n{indent}Respuesta: {stop_transaction_response}', color='light_magenta'))
 
                         stop_transaction = False
 
