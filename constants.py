@@ -4,8 +4,8 @@ import json
 with open('/home/pi/ID.json') as identificador:
     datos_identificador = json.load(identificador)
 
-ID_CARGADOR = str(datos_identificador['ID'])
-NUM_CARGADOR = str(datos_identificador['Estacion'])
+ID_CARGADOR = datos_identificador['ID']
+NUM_CARGADOR = datos_identificador['Estacion']
 ID_WEBSOCKET = datos_identificador['id_websocket']
 
 WS_URL = f'wss://app.tridenstechnology.com/ev-charge/gw-comm/condor-energy/{ID_WEBSOCKET}'
