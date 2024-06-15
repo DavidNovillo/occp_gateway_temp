@@ -219,6 +219,19 @@ class MyChargePoint(cp):
         )
 
     # Función que maneja la recepción de un mensaje ChangeConfiguration
+    @on('ChangeConfiguration')
+    async def on_change_configuration(self, key, value, **kwargs):
+        print(f'Received ChangeConfiguration key: {key} with value: {value}')
+        # Almacenar los keys en el archivo keys.json
+        save_keys(key, value)
+        # Almacenar los datos en la cola
+        await self.queue.put(('ChangeConfiguration', key, value))
+        # Return a result
+        return call_result.ChangeConfiguration(
+            status=ConfigurationStatus.accepted
+        )
+
+    # Función que maneja la recepción de un mensaje GetConfiguration
     @on('GetConfiguration')
     async def on_get_configuration(self, key=None, **kwargs):
         print(f'Received GetConfiguration with keys: {key}')
@@ -237,7 +250,7 @@ class MyChargePoint(cp):
                     found_configurations.append({
                         'key': k,
                         'readonly': False,  # O determinar si es de solo lectura
-                        'value': value
+                        'value': str(value)
                     })
                 else:
                     unknown_configuration.append(k)
