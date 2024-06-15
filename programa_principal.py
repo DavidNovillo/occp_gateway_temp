@@ -59,7 +59,7 @@ async def handle_queue(queue):
         await asyncio.sleep(1)  # Esperar un poco antes de verificar nuevamente
 
 
-async def keep_hearbeat(charge_point, interval):
+async def keep_heartbeat(charge_point, interval):
     global logger, indent
     while True:
         # Enviar un mensaje Heartbeat y esperar la respuesta
@@ -82,7 +82,7 @@ async def main():
     clear()  # Limpiar la consola
 
     # Se crea el logger
-    logger.info(colored(f"Iniciando programa...", attrs=[
+    logger.info(colored(f"\nIniciando programa...", attrs=[
                 "bold", "blink"], color="light_green"))
     logger.info(colored(f"Versión: {version}",
                 attrs=["bold"], color="light_green"))
@@ -176,7 +176,7 @@ async def main():
                 heartbeat_interval = boot_response.interval
 
                 # Se inicia el envío constante del mensaje Heartbeat
-                asyncio.create_task(keep_hearbeat(
+                asyncio.create_task(keep_heartbeat(
                     charge_point, boot_response.interval))
 
                 # Enviar el estado del cargador a la instancia de ChargePoint

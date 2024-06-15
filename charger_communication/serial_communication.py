@@ -125,7 +125,8 @@ def comunicacion_serial_cargador(ser, trama, logger):
                 if aux >= 5000:
                     corriente = (0.1*aux)-500
                     voltaje = int(hex(data_in[26])+hex(data_in[27])[2:], 16)
-                logger.info(f'Estado del cargador: {estado_cargador}')
+                logger.info(
+                    f'\rEstado del cargador: {estado_cargador}', end='', flush=True)
         intentos = intentos-1
         time.sleep(0.5)
 
