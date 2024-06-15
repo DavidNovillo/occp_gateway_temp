@@ -82,7 +82,7 @@ async def main():
     clear()  # Limpiar la consola
 
     # Se crea el logger
-    logger.info(colored(f"\nIniciando programa...", attrs=[
+    logger.info(colored(f"\n\nIniciando programa...", attrs=[
                 "bold", "blink"], color="light_green"))
     logger.info(colored(f"Versión: {version}",
                 attrs=["bold"], color="light_green"))
@@ -130,7 +130,7 @@ async def main():
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys('MeterValuesInterval', 30)
-    heartbeat_interval = load_keys('HeartbeatInterval', 21600)
+    heartbeat_interval = load_keys('HeartbeatInterval', 14400)
     logger.info(
         f"Intervalo de MeterValues: {meter_values_interval} s\n{indent}Intervalo de Heartbeat: {heartbeat_interval} s")
 

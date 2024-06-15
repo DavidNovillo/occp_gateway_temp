@@ -219,14 +219,43 @@ class MyChargePoint(cp):
         )
 
     # Función que maneja la recepción de un mensaje ChangeConfiguration
-    @on('ChangeConfiguration')
-    async def on_change_configuration(self, key, value, **kwargs):
-        print(f'Received ChangeConfiguration key: {key} with value: {value}')
-        # Almacenar los keys en el archivo keys.json
-        save_keys(key, value)
-        # Almacenar los datos en la cola
-        await self.queue.put(('ChangeConfiguration', key, value))
-        # Return a result
-        return call_result.ChangeConfiguration(
-            status=ConfigurationStatus.accepted
+    @on('GetConfiguration')
+    async def on_get_configuration(self, key=None, **kwargs):
+        print(f'Received GetConfiguration with keys: {key}')
+
+        # Preparar las listas de configuraciones encontradas y desconocidas
+        found_configurations = []
+        unknown_configuration = []
+
+        if key:
+            # Si se proporcionaron claves específicas, buscar cada una
+            for k in key:
+                # Usar la función load_keys para buscar el valor de cada clave
+                # Asumiendo que 'None' es el valor predeterminado si la clave no se encuentra
+                value = load_keys(k, None)
+                if value is not None:
+                    found_configurations.append({
+                        'key': k,
+                        'readonly': False,  # O determinar si es de solo lectura
+                        'value': value
+                    })
+                else:
+                    unknown_configuration.append(k)
+        else:
+            # Si no se proporcionaron claves, cargar todas las configuraciones disponibles
+            # Esto asume que tienes una forma de listar todas las claves disponibles,
+            # posiblemente modificando load_keys para devolver todo si 'key' es None
+            # Modifica esta línea según tu implementación
+            all_keys = load_keys(None, {})
+            for k, v in all_keys.items():
+                found_configurations.append({
+                    'key': k,
+                    'readonly': False,  # Ajustar según sea necesario
+                    'value': v
+                })
+
+        # Devolver el resultado
+        return call_result.GetConfiguration(
+            configuration_key=found_configurations,
+            unknown_key=unknown_configuration
         )
