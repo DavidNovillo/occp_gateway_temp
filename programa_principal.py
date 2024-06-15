@@ -76,6 +76,11 @@ def clear():  # Función para limpiar la consola
     return os.system("clear")
 
 
+def mover_cursor(x, y):
+    sys.stdout.write(f"\033[{y};{x}H")
+    sys.stdout.flush()
+
+
 async def main():
 
     # Declaración de variables globales
@@ -136,8 +141,7 @@ async def main():
         while True:
             await asyncio.sleep(60)
             if not should_pause[0]:
-                print("\r", end="")
-                sys.stdout.flush()
+                mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
                     comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger)
                 )
