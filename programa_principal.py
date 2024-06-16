@@ -12,6 +12,7 @@ import json
 import serial
 import os
 import sys
+import time
 from termcolor import colored
 
 from ocpp_communication.charge_point import MyChargePoint, save_keys, load_keys
@@ -44,10 +45,11 @@ transaction_id = None
 send_meter_reading = False
 logger = custom_logger()
 indent = "                             "  # Indentación para el logger
+send_heartbeat = False
 
 
 async def handle_queue(queue):
-    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id
+    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, send_heartbeat
     data = None
     while True:
         if not queue.empty():
@@ -62,6 +64,8 @@ async def handle_queue(queue):
                     send_meter_reading = True
                     if data[2] is not None:
                         connector_id = data[2]
+                elif data[1] == "Heartbeat":
+                    send_heartbeat = True
             elif data[0] == "RemoteStopTransaction":
                 transaction_id = data[1]
                 stop_transaction = True
@@ -95,11 +99,14 @@ async def main():
             f"\n\nIniciando programa...", attrs=["bold", "blink"], color="light_green"
         )
     )
-    logger.info(colored(f"Versión: {version}", attrs=["bold"], color="light_green"))
+    logger.info(colored(f"Versión: {version}",
+                attrs=["bold"], color="light_green"))
     logger.info(
-        colored(f"Punto de carga: {NUM_CARGADOR}", attrs=["bold"], color="light_green")
+        colored(f"Punto de carga: {NUM_CARGADOR}",
+                attrs=["bold"], color="light_green")
     )
-    logger.info(colored(f"ID: {ID_CARGADOR}\n", attrs=["bold"], color="light_green"))
+    logger.info(colored(f"ID: {ID_CARGADOR}\n",
+                attrs=["bold"], color="light_green"))
 
     # Asignación de pines GPIO para encender y apagar las luces piloto
     # TODO: Revisar si es que es necesario
@@ -116,7 +123,8 @@ async def main():
         ser.reset_output_buffer()
         ser.reset_input_buffer()
     except:
-        logger.error(colored("Revise el modulo USB - RS-485 del cargador", color="red"))
+        logger.error(
+            colored("Revise el modulo USB - RS-485 del cargador", color="red"))
 
     # Configuración de la comunicación serial con el medidor
     try:
@@ -131,7 +139,8 @@ async def main():
         ser_medidor.reset_output_buffer()
         ser_medidor.reset_input_buffer()
     except:
-        logger.error(colored("Revise el modulo USB - RS-485 del medidor", color="red"))
+        logger.error(
+            colored("Revise el modulo USB - RS-485 del medidor", color="red"))
 
     cp_status, battery_status, corriente, voltaje = None, None, None, None
 
@@ -143,24 +152,12 @@ async def main():
             if not should_pause[0]:
                 mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
-                    comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger)
+                    comunicacion_serial_cargador(
+                        ser, TRAMA_INICIALIZAR, logger)
                 )
 
                 # Enviar el estado del cargador a la instancia de ChargePoint
                 charge_point.set_info(cp_status)
-
-    async def keep_heartbeat(charge_point, interval):
-        global logger, indent
-        while True:
-            # Enviar un mensaje Heartbeat y esperar la respuesta
-            heartbeat_response = await charge_point.send_heartbeat()
-            logger.info(
-                colored(
-                    f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}",
-                    color="light_yellow",
-                )
-            )
-            await asyncio.sleep(interval)
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys("MeterValuesInterval", 30)
@@ -170,14 +167,14 @@ async def main():
     )
 
     # Inicialización de variables
-
     cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
         ser, TRAMA_INICIALIZAR, logger
     )
     energy_consumption = comunicacion_serial_medidor(
         ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
     )
-    power = comunicacion_serial_medidor(ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
+    power = comunicacion_serial_medidor(
+        ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
 
     logger.info(
         f"Estado del cargador: {cp_status}\n{indent}Estado de la batería: {battery_status}\n{indent}Corriente: {corriente}\n{indent}Voltaje: {voltaje}\n{indent}Consumo de energía: {energy_consumption}\n{indent}Potencia: {power}"
@@ -186,6 +183,7 @@ async def main():
     max_retries = 5
     retry_delay = 5  # delay in seconds
     counter = meter_values_interval + 1
+    save_time = True
 
     for i in range(max_retries):
         try:
@@ -203,7 +201,8 @@ async def main():
                 asyncio.create_task(charge_point.start())
                 asyncio.create_task(handle_queue(queue))
                 # Se inicia la comunicación serial constante con el cargador en segundo plano
-                asyncio.create_task(check_charger_status(should_pause, charge_point))
+                asyncio.create_task(check_charger_status(
+                    should_pause, charge_point))
 
                 # Enviar un mensaje BootNotification y esperar la respuesta
                 boot_response = await charge_point.send_boot_notification()
@@ -212,11 +211,6 @@ async def main():
                 )
                 save_keys("HeartbeatInterval", boot_response.interval)
                 heartbeat_interval = boot_response.interval
-
-                # Se inicia el envío constante del mensaje Heartbeat
-                asyncio.create_task(
-                    keep_heartbeat(charge_point, boot_response.interval)
-                )
 
                 # Enviar el estado del cargador a la instancia de ChargePoint
                 charge_point.set_info(cp_status)
@@ -237,9 +231,26 @@ async def main():
 
                 while True:
                     current_time = (
-                        datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3]
+                        datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f")[:-3]
                         + "Z"
                     )
+
+                    # Bucle para enviar el HeartBeat
+                    if save_time == True:
+                        hora_intervalo = time.time() + heartbeat_interval
+                        save_time = False
+
+                    if time.time() >= hora_intervalo or send_heartbeat == True:
+                        heartbeat_response = await charge_point.send_heartbeat()
+                        logger.info(
+                            colored(
+                                f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}",
+                                color="light_yellow",
+                            )
+                        )
+                        save_time = True
+                        send_heartbeat = False
 
                     # start_transaction_response = None
                     if remote_start_transaction == True:
@@ -248,7 +259,8 @@ async def main():
 
                         # Leer el estado del cargador y del medidor
                         cp_status, battery_status, corriente, voltaje = (
-                            comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger)
+                            comunicacion_serial_cargador(
+                                ser, TRAMA_INICIALIZAR, logger)
                         )
                         energy_consumption = comunicacion_serial_medidor(
                             ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
@@ -297,14 +309,16 @@ async def main():
                         # Comprobar si la pistola está conectada para enviar la trama de carga
                         if cp_status == "Pistola Conectada":
                             cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(ser, TRAMA_CARGAR, logger)
+                                comunicacion_serial_cargador(
+                                    ser, TRAMA_CARGAR, logger)
                             )
 
                     if send_meter_reading == True or counter == meter_values_interval:
                         # Comprobar si la pistola está conectada para enviar la trama de carga
                         if cp_status == "Pistola Conectada":
                             cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(ser, TRAMA_CARGAR, logger)
+                                comunicacion_serial_cargador(
+                                    ser, TRAMA_CARGAR, logger)
                             )
 
                             status = estados_status_notification(cp_status)
@@ -373,7 +387,8 @@ async def main():
                     ):
                         # Detener la carga
                         cp_status, battery_status, corriente, voltaje = (
-                            comunicacion_serial_cargador(ser, TRAMA_DETENER, logger)
+                            comunicacion_serial_cargador(
+                                ser, TRAMA_DETENER, logger)
                         )
 
                         # Leer el estado del medidor
@@ -419,13 +434,15 @@ async def main():
                         # Esperar un poco antes de enviar el StatusNotification
                         await asyncio.sleep(10)
                         cp_status, battery_status, corriente, voltaje = (
-                            comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger)
+                            comunicacion_serial_cargador(
+                                ser, TRAMA_INICIALIZAR, logger)
                         )
 
                         # Comprobar si aún no se ha detenido la carga
                         if cp_status == "Cargando":
                             cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(ser, TRAMA_DETENER, logger)
+                                comunicacion_serial_cargador(
+                                    ser, TRAMA_DETENER, logger)
                             )
 
                         while cp_status == "Pistola Conectada Fin de Carga":
@@ -458,7 +475,8 @@ async def main():
                     await asyncio.sleep(2)
 
         except websockets.exceptions.ConnectionClosed as e:
-            logger.error(f"La conexión WebSocket se cerró inesperadamente: {e}")
+            logger.error(
+                f"La conexión WebSocket se cerró inesperadamente: {e}")
         except websockets.exceptions.InvalidURI as e:
             logger.error(f"La URI proporcionada no es válida: {e}")
         except Exception as e:
