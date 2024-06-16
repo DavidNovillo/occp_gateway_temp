@@ -88,7 +88,7 @@ def mover_cursor(x, y):
 async def main():
 
     # Declaración de variables globales
-    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent
+    global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
     version = "3.00a"  # versión del programa
 
     clear()  # Limpiar la consola
