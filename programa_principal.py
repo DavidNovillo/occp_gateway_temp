@@ -150,7 +150,7 @@ async def main():
         while True:
             await asyncio.sleep(60)
             if not should_pause[0]:
-                mover_cursor(1, 1)
+                # mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
                     comunicacion_serial_cargador(
                         ser, TRAMA_INICIALIZAR, logger)
