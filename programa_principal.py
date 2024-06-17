@@ -249,6 +249,17 @@ async def main():
                                 color="light_yellow",
                             )
                         )
+
+                        # Enviar un mensaje StatusNotification
+                        status = estados_status_notification(cp_status)
+                        await charge_point.send_status_notification(
+                            connector_id=1,
+                            status=status[0],
+                            error_code=status[1],
+                            info=status[2],
+                        )
+                        logger.info(f"Status Notification enviado: {status}")
+
                         save_time = True
                         send_heartbeat = False
 
