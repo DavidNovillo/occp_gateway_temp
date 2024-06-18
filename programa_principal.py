@@ -192,7 +192,7 @@ async def main():
             should_pause = [False]
 
             # Establecimiento de la conexión WebSocket con el Central System
-            async with websockets.connect(WS_URL, subprotocols=["ocpp1.6"]) as ws:
+            async with websockets.connect(WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=20) as ws:
 
                 # Crear una instancia de la clase MyChargePoint
                 charge_point = MyChargePoint("prueba_loja", ws, queue=queue)
@@ -209,8 +209,6 @@ async def main():
                 logger.info(
                     f"Boot Notification enviado\n{indent}Respuesta: {boot_response}"
                 )
-                save_keys("HeartbeatInterval", boot_response.interval)
-                heartbeat_interval = boot_response.interval
 
                 # Enviar el estado del cargador a la instancia de ChargePoint
                 charge_point.set_info(cp_status)
