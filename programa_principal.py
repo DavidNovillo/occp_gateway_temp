@@ -148,7 +148,7 @@ async def main():
     async def check_charger_status(should_pause, charge_point=None):
         nonlocal cp_status, battery_status, corriente, voltaje
         while True:
-            await asyncio.sleep(60)
+            await asyncio.sleep(300)
             if not should_pause[0]:
                 # mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
@@ -261,7 +261,7 @@ async def main():
                         save_time = True
                         send_heartbeat = False
 
-                    # start_transaction_response = None
+                    # Iniciar la transacción remota
                     if remote_start_transaction == True:
                         # Pausar la comunicación constante con el cargador:
                         should_pause[0] = True
@@ -306,10 +306,7 @@ async def main():
 
                         energy_consumption_start = energy_consumption
 
-                        if (
-                            start_transaction_response.id_tag_info["status"]
-                            == "Accepted"
-                        ):
+                        if (start_transaction_response.id_tag_info["status"] == "Accepted"):
                             counter = 0
                             transaction_id = start_transaction_response.transaction_id
 
@@ -389,11 +386,7 @@ async def main():
 
                     if counter < meter_values_interval:
                         counter += 1
-                    if (
-                        stop_transaction == True
-                        or cp_status == "Carga Completa"
-                        or battery_status == 100
-                    ):
+                    if (stop_transaction == True or cp_status == "Carga Completa" or battery_status == 100):
                         # Detener la carga
                         cp_status, battery_status, corriente, voltaje = (
                             comunicacion_serial_cargador(
