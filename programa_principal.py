@@ -192,168 +192,94 @@ async def main():
             should_pause = [False]
 
             # Establecimiento de la conexión WebSocket con el Central System
-            async with websockets.connect(WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=20) as ws:
+            try:
+                async with websockets.connect(WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=60) as ws:
 
-                # Crear una instancia de la clase MyChargePoint
-                charge_point = MyChargePoint("prueba_loja", ws, queue=queue)
+                    # Crear una instancia de la clase MyChargePoint
+                    charge_point = MyChargePoint(
+                        "prueba_loja", ws, queue=queue)
 
-                # Iniciar charge_point.start() y handle_queue() en segundo plano
-                asyncio.create_task(charge_point.start())
-                asyncio.create_task(handle_queue(queue))
-                # Se inicia la comunicación serial constante con el cargador en segundo plano
-                asyncio.create_task(check_charger_status(
-                    should_pause, charge_point))
+                    # Iniciar charge_point.start() y handle_queue() en segundo plano
+                    asyncio.create_task(charge_point.start())
+                    asyncio.create_task(handle_queue(queue))
+                    # Se inicia la comunicación serial constante con el cargador en segundo plano
+                    asyncio.create_task(check_charger_status(
+                        should_pause, charge_point))
 
-                # Enviar un mensaje BootNotification y esperar la respuesta
-                boot_response = await charge_point.send_boot_notification()
-                logger.info(
-                    f"Boot Notification enviado\n{indent}Respuesta: {boot_response}"
-                )
-
-                # Enviar el estado del cargador a la instancia de ChargePoint
-                charge_point.set_info(cp_status)
-
-                # Función que retorna los status del Status Notification según el estado del cargador
-                status = estados_status_notification(cp_status)
-
-                # Enviar un mensaje StatusNotification
-                await charge_point.send_status_notification(
-                    connector_id=1,
-                    status=status[0],
-                    error_code=status[1],
-                    info=status[2],
-                )
-                logger.info(f"Status Notification enviado: {status}")
-
-                send_once = True
-
-                while True:
-                    current_time = (
-                        datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f")[:-3]
-                        + "Z"
+                    # Enviar un mensaje BootNotification y esperar la respuesta
+                    boot_response = await charge_point.send_boot_notification()
+                    logger.info(
+                        f"Boot Notification enviado\n{indent}Respuesta: {boot_response}"
                     )
 
-                    # Bucle para enviar el HeartBeat
-                    if save_time == True:
-                        hora_intervalo = time.time() + heartbeat_interval
-                        save_time = False
+                    # Enviar el estado del cargador a la instancia de ChargePoint
+                    charge_point.set_info(cp_status)
 
-                    if time.time() >= hora_intervalo or send_heartbeat == True:
-                        heartbeat_response = await charge_point.send_heartbeat()
-                        logger.info(
-                            colored(
-                                f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}",
-                                color="light_yellow",
-                            )
+                    # Función que retorna los status del Status Notification según el estado del cargador
+                    status = estados_status_notification(cp_status)
+
+                    # Enviar un mensaje StatusNotification
+                    await charge_point.send_status_notification(
+                        connector_id=1,
+                        status=status[0],
+                        error_code=status[1],
+                        info=status[2],
+                    )
+                    logger.info(f"Status Notification enviado: {status}")
+
+                    send_once = True
+
+                    while True:
+                        current_time = (
+                            datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f")[:-3]
+                            + "Z"
                         )
 
-                        # Enviar un mensaje StatusNotification
-                        status = estados_status_notification(cp_status)
-                        await charge_point.send_status_notification(
-                            connector_id=1,
-                            status=status[0],
-                            error_code=status[1],
-                            info=status[2],
-                        )
-                        logger.info(f"Status Notification enviado: {status}")
+                        # Bucle para enviar el HeartBeat
+                        if save_time == True:
+                            hora_intervalo = time.time() + heartbeat_interval
+                            save_time = False
 
-                        save_time = True
-                        send_heartbeat = False
-
-                    # Iniciar la transacción remota
-                    if remote_start_transaction == True:
-                        # Pausar la comunicación constante con el cargador:
-                        should_pause[0] = True
-
-                        # Leer el estado del cargador y del medidor
-                        cp_status, battery_status, corriente, voltaje = (
-                            comunicacion_serial_cargador(
-                                ser, TRAMA_INICIALIZAR, logger)
-                        )
-                        energy_consumption = comunicacion_serial_medidor(
-                            ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
-                        )
-
-                        status = estados_status_notification(cp_status)
-
-                        # Enviar un mensaje StatusNotification
-                        await charge_point.send_status_notification(
-                            connector_id=connector_id,
-                            status=status[0],
-                            error_code=status[1],
-                            info=status[2],
-                        )
-                        logger.info(
-                            f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
-                        )
-
-                        # Enviar un mensaje StartTransaction
-                        start_transaction_response = (
-                            await charge_point.send_start_transaction(
-                                connector_id=connector_id,
-                                meter_start=energy_consumption,
-                                id_tag=id_tag,
-                                timestamp=current_time,
-                            )
-                        )
-                        logger.info(
-                            colored(
-                                f"Start Transaction enviado\n{indent}Respuesta: {start_transaction_response}",
-                                color="light_blue",
-                            )
-                        )
-
-                        energy_consumption_start = energy_consumption
-
-                        if (start_transaction_response.id_tag_info["status"] == "Accepted"):
-                            counter = 0
-                            transaction_id = start_transaction_response.transaction_id
-
-                        remote_start_transaction = False
-
-                        # Comprobar si la pistola está conectada para enviar la trama de carga
-                        if cp_status == "Pistola Conectada":
-                            cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(
-                                    ser, TRAMA_CARGAR, logger)
-                            )
-
-                    if send_meter_reading == True or counter == meter_values_interval:
-                        # Comprobar si la pistola está conectada para enviar la trama de carga
-                        if cp_status == "Pistola Conectada":
-                            cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(
-                                    ser, TRAMA_CARGAR, logger)
-                            )
-
-                            status = estados_status_notification(cp_status)
-                            # Enviar un mensaje StatusNotification
-                            await charge_point.send_status_notification(
-                                connector_id=connector_id,
-                                status=status[0],
-                                error_code=status[1],
-                                info=status[2],
-                            )
+                        if time.time() >= hora_intervalo or send_heartbeat == True:
+                            heartbeat_response = await charge_point.send_heartbeat()
                             logger.info(
-                                f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
-                            )
-
-                        else:
-                            cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(
-                                    ser, TRAMA_INICIALIZAR, logger
+                                colored(
+                                    f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}",
+                                    color="light_yellow",
                                 )
                             )
-                        energy_consumption = comunicacion_serial_medidor(
-                            ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
-                        )
-                        power = comunicacion_serial_medidor(
-                            ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA
-                        )
 
-                        if cp_status == "Cargando" and send_once == True:
+                            # Enviar un mensaje StatusNotification
                             status = estados_status_notification(cp_status)
+                            await charge_point.send_status_notification(
+                                connector_id=1,
+                                status=status[0],
+                                error_code=status[1],
+                                info=status[2],
+                            )
+                            logger.info(
+                                f"Status Notification enviado: {status}")
+
+                            save_time = True
+                            send_heartbeat = False
+
+                        # Iniciar la transacción remota
+                        if remote_start_transaction == True:
+                            # Pausar la comunicación constante con el cargador:
+                            should_pause[0] = True
+
+                            # Leer el estado del cargador y del medidor
+                            cp_status, battery_status, corriente, voltaje = (
+                                comunicacion_serial_cargador(
+                                    ser, TRAMA_INICIALIZAR, logger)
+                            )
+                            energy_consumption = comunicacion_serial_medidor(
+                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
+                            )
+
+                            status = estados_status_notification(cp_status)
+
                             # Enviar un mensaje StatusNotification
                             await charge_point.send_status_notification(
                                 connector_id=connector_id,
@@ -364,123 +290,201 @@ async def main():
                             logger.info(
                                 f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
                             )
-                            send_once = False
 
-                        # Enviar un mensaje MeterValues
-                        await charge_point.send_meter_values(
-                            connector_id=0,
-                            energy_value=energy_consumption,
-                            power_value=power,
-                            battery_value=battery_status,
-                            timestamp=current_time,
-                            transaction_id=transaction_id,
-                        )
-                        logger.info(
-                            colored(
-                                f"Meter Values enviado\n{indent}Energy: {energy_consumption} kWh\n{indent}Power: {power} W\n{indent}Battery: {battery_status}%",
-                                color="light_cyan",
+                            # Enviar un mensaje StartTransaction
+                            start_transaction_response = (
+                                await charge_point.send_start_transaction(
+                                    connector_id=connector_id,
+                                    meter_start=energy_consumption,
+                                    id_tag=id_tag,
+                                    timestamp=current_time,
+                                )
                             )
-                        )
-                        counter = 0
-                        send_meter_reading = False
-
-                    if counter < meter_values_interval:
-                        counter += 1
-                    if (stop_transaction == True or cp_status == "Carga Completa" or battery_status == 100):
-                        # Detener la carga
-                        cp_status, battery_status, corriente, voltaje = (
-                            comunicacion_serial_cargador(
-                                ser, TRAMA_DETENER, logger)
-                        )
-
-                        # Leer el estado del medidor
-                        energy_consumption = comunicacion_serial_medidor(
-                            ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
-                        )
-
-                        status = estados_status_notification(cp_status)
-                        # Enviar un mensaje StatusNotification
-                        await charge_point.send_status_notification(
-                            connector_id=connector_id,
-                            status=status[0],
-                            error_code=status[1],
-                            info=status[2],
-                        )
-                        logger.info(
-                            f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
-                        )
-
-                        # En caso de que se reinicie la cuenta del medidor
-                        if energy_consumption_start > energy_consumption:
-                            energy_consumption = (
-                                1000000 - energy_consumption_start + energy_consumption
+                            logger.info(
+                                colored(
+                                    f"Start Transaction enviado\n{indent}Respuesta: {start_transaction_response}",
+                                    color="light_blue",
+                                )
                             )
 
-                        # Enviar un mensaje StopTransaction
-                        stop_transaction_response = (
-                            await charge_point.send_stop_transaction(
-                                meter_stop=energy_consumption,
-                                transaction_id=transaction_id,
+                            energy_consumption_start = energy_consumption
+
+                            if (start_transaction_response.id_tag_info["status"] == "Accepted"):
+                                counter = 0
+                                transaction_id = start_transaction_response.transaction_id
+
+                            remote_start_transaction = False
+
+                            # Comprobar si la pistola está conectada para enviar la trama de carga
+                            if cp_status == "Pistola Conectada":
+                                cp_status, battery_status, corriente, voltaje = (
+                                    comunicacion_serial_cargador(
+                                        ser, TRAMA_CARGAR, logger)
+                                )
+
+                        if send_meter_reading == True or counter == meter_values_interval:
+                            # Comprobar si la pistola está conectada para enviar la trama de carga
+                            if cp_status == "Pistola Conectada":
+                                cp_status, battery_status, corriente, voltaje = (
+                                    comunicacion_serial_cargador(
+                                        ser, TRAMA_CARGAR, logger)
+                                )
+
+                                status = estados_status_notification(cp_status)
+                                # Enviar un mensaje StatusNotification
+                                await charge_point.send_status_notification(
+                                    connector_id=connector_id,
+                                    status=status[0],
+                                    error_code=status[1],
+                                    info=status[2],
+                                )
+                                logger.info(
+                                    f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
+                                )
+
+                            else:
+                                cp_status, battery_status, corriente, voltaje = (
+                                    comunicacion_serial_cargador(
+                                        ser, TRAMA_INICIALIZAR, logger
+                                    )
+                                )
+                            energy_consumption = comunicacion_serial_medidor(
+                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
+                            )
+                            power = comunicacion_serial_medidor(
+                                ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA
+                            )
+
+                            if cp_status == "Cargando" and send_once == True:
+                                status = estados_status_notification(cp_status)
+                                # Enviar un mensaje StatusNotification
+                                await charge_point.send_status_notification(
+                                    connector_id=connector_id,
+                                    status=status[0],
+                                    error_code=status[1],
+                                    info=status[2],
+                                )
+                                logger.info(
+                                    f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
+                                )
+                                send_once = False
+
+                            # Enviar un mensaje MeterValues
+                            await charge_point.send_meter_values(
+                                connector_id=0,
+                                energy_value=energy_consumption,
+                                power_value=power,
+                                battery_value=battery_status,
                                 timestamp=current_time,
+                                transaction_id=transaction_id,
                             )
-                        )
-                        logger.info(
-                            colored(
-                                f"Stop Transaction enviado\n{indent}Meter stop:{energy_consumption}\n{indent}Respuesta: {stop_transaction_response}",
-                                color="light_magenta",
+                            logger.info(
+                                colored(
+                                    f"Meter Values enviado\n{indent}Energy: {energy_consumption} kWh\n{indent}Power: {power} W\n{indent}Battery: {battery_status}%",
+                                    color="light_cyan",
+                                )
                             )
-                        )
+                            counter = 0
+                            send_meter_reading = False
 
-                        stop_transaction = False
-
-                        # Esperar un poco antes de enviar el StatusNotification
-                        await asyncio.sleep(10)
-                        cp_status, battery_status, corriente, voltaje = (
-                            comunicacion_serial_cargador(
-                                ser, TRAMA_INICIALIZAR, logger)
-                        )
-
-                        # Comprobar si aún no se ha detenido la carga
-                        if cp_status == "Cargando":
+                        if counter < meter_values_interval:
+                            counter += 1
+                        if (stop_transaction == True or cp_status == "Carga Completa" or battery_status == 100):
+                            # Detener la carga
                             cp_status, battery_status, corriente, voltaje = (
                                 comunicacion_serial_cargador(
                                     ser, TRAMA_DETENER, logger)
                             )
 
-                        while cp_status == "Pistola Conectada Fin de Carga":
-                            await asyncio.sleep(3)
-                            cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(
-                                    ser, TRAMA_INICIALIZAR, logger
+                            # Leer el estado del medidor
+                            energy_consumption = comunicacion_serial_medidor(
+                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
+                            )
+
+                            status = estados_status_notification(cp_status)
+                            # Enviar un mensaje StatusNotification
+                            await charge_point.send_status_notification(
+                                connector_id=connector_id,
+                                status=status[0],
+                                error_code=status[1],
+                                info=status[2],
+                            )
+                            logger.info(
+                                f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
+                            )
+
+                            # En caso de que se reinicie la cuenta del medidor
+                            if energy_consumption_start > energy_consumption:
+                                energy_consumption = (
+                                    1000000 - energy_consumption_start + energy_consumption
+                                )
+
+                            # Enviar un mensaje StopTransaction
+                            stop_transaction_response = (
+                                await charge_point.send_stop_transaction(
+                                    meter_stop=energy_consumption,
+                                    transaction_id=transaction_id,
+                                    timestamp=current_time,
+                                )
+                            )
+                            logger.info(
+                                colored(
+                                    f"Stop Transaction enviado\n{indent}Meter stop:{energy_consumption}\n{indent}Respuesta: {stop_transaction_response}",
+                                    color="light_magenta",
                                 )
                             )
 
-                        status = estados_status_notification(cp_status)
-                        # Enviar un mensaje StatusNotification
-                        await charge_point.send_status_notification(
-                            connector_id=connector_id,
-                            status=status[0],
-                            error_code=status[1],
-                            info=status[2],
-                        )
-                        logger.info(
-                            f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
-                        )
+                            stop_transaction = False
 
-                        # Se regresan las variables a su valor inicial
-                        counter = meter_values_interval + 1
-                        send_once = True
-                        should_pause[0] = False
+                            # Esperar un poco antes de enviar el StatusNotification
+                            await asyncio.sleep(10)
+                            cp_status, battery_status, corriente, voltaje = (
+                                comunicacion_serial_cargador(
+                                    ser, TRAMA_INICIALIZAR, logger)
+                            )
 
-                        # Limpiar la consola
-                        clear()
-                    await asyncio.sleep(2)
+                            # Comprobar si aún no se ha detenido la carga
+                            if cp_status == "Cargando":
+                                cp_status, battery_status, corriente, voltaje = (
+                                    comunicacion_serial_cargador(
+                                        ser, TRAMA_DETENER, logger)
+                                )
 
-        except websockets.exceptions.ConnectionClosed as e:
-            logger.error(
-                f"La conexión WebSocket se cerró inesperadamente: {e}")
-        except websockets.exceptions.InvalidURI as e:
-            logger.error(f"La URI proporcionada no es válida: {e}")
+                            while cp_status == "Pistola Conectada Fin de Carga":
+                                await asyncio.sleep(3)
+                                cp_status, battery_status, corriente, voltaje = (
+                                    comunicacion_serial_cargador(
+                                        ser, TRAMA_INICIALIZAR, logger
+                                    )
+                                )
+
+                            status = estados_status_notification(cp_status)
+                            # Enviar un mensaje StatusNotification
+                            await charge_point.send_status_notification(
+                                connector_id=connector_id,
+                                status=status[0],
+                                error_code=status[1],
+                                info=status[2],
+                            )
+                            logger.info(
+                                f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
+                            )
+
+                            # Se regresan las variables a su valor inicial
+                            counter = meter_values_interval + 1
+                            send_once = True
+                            should_pause[0] = False
+
+                            # Limpiar la consola
+                            clear()
+                        await asyncio.sleep(2)
+
+            except websockets.exceptions.ConnectionClosed as e:
+                logger.error(
+                    f"La conexión WebSocket se cerró inesperadamente: {e}")
+            except websockets.exceptions.InvalidURI as e:
+                logger.error(f"La URI proporcionada no es válida: {e}")
+
         except Exception as e:
             logger.error(f"Ocurrió un error al intentar conectar: {e}")
         except KeyboardInterrupt:
