@@ -388,7 +388,8 @@ async def main():
                                 contador_standby += 1
 
                             if contador_standby >= 6:
-                                stop_transaction = True
+                                logger.info(colored(
+                                    'Timeout del estado StandBy durante la carga. Terminando la transacción...', color='light_red'))
 
                             # Enviar un mensaje MeterValues
                             await charge_point.send_meter_values(
@@ -410,7 +411,7 @@ async def main():
 
                         if counter < meter_values_interval:
                             counter += 1
-                        if (stop_transaction == True or cp_status == "Carga Completa" or battery_status == 100):
+                        if (stop_transaction == True or cp_status == "Carga Completa" or battery_status == 100 or contador_standby >= 6):
                             # Detener la carga
                             cp_status, battery_status, corriente, voltaje = (
                                 comunicacion_serial_cargador(
