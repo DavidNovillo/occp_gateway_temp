@@ -149,7 +149,8 @@ async def main():
         nonlocal cp_status, battery_status, corriente, voltaje
         while True:
             if should_pause[0] == False:
-                logger.info("Comunicación constante activa")
+                logger.info(
+                    colored("Comunicación constante activa", attrs=["bold"]))
                 # mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
                     comunicacion_serial_cargador(
