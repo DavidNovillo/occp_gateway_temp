@@ -15,7 +15,7 @@ import sys
 import time
 from termcolor import colored
 
-from ocpp_communication.charge_point import MyChargePoint, save_keys, load_keys
+from ocpp_communication.charge_point import MyChargePoint, load_keys
 from logger.logger_creator import custom_logger
 from charger_communication.serial_communication import (
     comunicacion_serial_cargador,
@@ -150,6 +150,7 @@ async def main():
         while True:
             await asyncio.sleep(300)
             if not should_pause[0]:
+                logger.info("Comunicación constante activa")
                 # mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
                     comunicacion_serial_cargador(
