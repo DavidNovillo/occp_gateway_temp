@@ -148,8 +148,7 @@ async def main():
     async def check_charger_status(should_pause, charge_point=None):
         nonlocal cp_status, battery_status, corriente, voltaje
         while True:
-            await asyncio.sleep(300)
-            if not should_pause[0]:
+            if should_pause[0] == False:
                 logger.info("Comunicación constante activa")
                 # mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
@@ -159,6 +158,7 @@ async def main():
 
                 # Enviar el estado del cargador a la instancia de ChargePoint
                 charge_point.set_info(cp_status)
+            await asyncio.sleep(300)
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys("MeterValuesInterval", 30)
