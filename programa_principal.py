@@ -234,6 +234,7 @@ async def main():
 
                     send_once = True
                     contador_standby = 0
+                    last_cp_status = cp_status
 
                     while True:
                         current_time = (
@@ -242,6 +243,20 @@ async def main():
                             ]
                             + "Z"
                         )
+
+                        if last_cp_status != cp_status:
+                            status = estados_status_notification(cp_status)
+
+                            # Enviar un mensaje StatusNotification
+                            await charge_point.send_status_notification(
+                                connector_id=1,
+                                status=status[0],
+                                error_code=status[1],
+                                info=status[2],
+                            )
+                            logger.info(
+                                f"Status Notification enviado por cambio de estado: {status}")
+                            last_cp_status = cp_status
 
                         # Bucle para enviar el HeartBeat
                         if save_time == True:
@@ -477,7 +492,7 @@ async def main():
                                 )
 
                             while cp_status == "Pistola Conectada Fin de Carga":
-                                await asyncio.sleep(5)
+                                await asyncio.sleep(10)
                                 cp_status, battery_status, corriente, voltaje = (
                                     comunicacion_serial_cargador(
                                         ser, TRAMA_INICIALIZAR, logger
@@ -501,7 +516,7 @@ async def main():
                             send_once = True
                             should_pause[0] = False
                             contador_standby = 0
-
+                            last_cp_status = cp_status
                             # Limpiar la consola
                             clear()
                         await asyncio.sleep(2)
