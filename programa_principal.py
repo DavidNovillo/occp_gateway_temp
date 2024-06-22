@@ -203,14 +203,18 @@ async def main():
                     charge_point = MyChargePoint(
                         "prueba_loja", ws, queue=queue)
 
-                    # Iniciar charge_point.start() y handle_queue() en segundo plano
-                    asyncio.create_task(charge_point.start())
-                    asyncio.create_task(handle_queue(queue))
-                    # Se inicia la comunicación serial constante con el cargador en segundo plano
-                    asyncio.create_task(
-                        check_charger_status(should_pause, charge_point)
-                    )
+                    try:
+                        # Iniciar charge_point.start() y handle_queue() en segundo plano
+                        task_1 = asyncio.create_task(charge_point.start())
+                        task_2 = asyncio.create_task(handle_queue(queue))
+                        # Se inicia la comunicación serial constante con el cargador en segundo plano
+                        task_3 = asyncio.create_task(check_charger_status(
+                            should_pause, charge_point))
 
+                        await asyncio.gather(task_1, task_2, task_3)
+                    except Exception as e:
+                        logger.error(colored(
+                            f"Ocurrió un error al intentar iniciar la comunicación con el cargador: {e}", color="red"))
                     # Enviar un mensaje BootNotification y esperar la respuesta
                     boot_response = await charge_point.send_boot_notification()
                     logger.info(
