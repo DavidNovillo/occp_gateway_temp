@@ -211,7 +211,7 @@ async def main():
                         asyncio.create_task(check_charger_status(
                             should_pause, charge_point))
 
-                        await asyncio.create_task(handle_queue(queue))
+                        asyncio.create_task(handle_queue(queue))
                     except Exception as e:
                         logger.error(colored(
                             f"Ocurrió un error al intentar iniciar la comunicación con el cargador: {e}", color="red"))
