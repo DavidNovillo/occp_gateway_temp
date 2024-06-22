@@ -205,13 +205,13 @@ async def main():
 
                     try:
                         # Iniciar charge_point.start() y handle_queue() en segundo plano
-                        task_1 = asyncio.create_task(charge_point.start())
-                        task_2 = asyncio.create_task(handle_queue(queue))
+                        asyncio.create_task(charge_point.start())
+                        # asyncio.create_task(handle_queue(queue))
                         # Se inicia la comunicación serial constante con el cargador en segundo plano
-                        task_3 = asyncio.create_task(check_charger_status(
+                        asyncio.create_task(check_charger_status(
                             should_pause, charge_point))
 
-                        await asyncio.gather(task_1, task_2, task_3)
+                        await asyncio.create_task(handle_queue(queue))
                     except Exception as e:
                         logger.error(colored(
                             f"Ocurrió un error al intentar iniciar la comunicación con el cargador: {e}", color="red"))
