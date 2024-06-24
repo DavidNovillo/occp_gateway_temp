@@ -89,7 +89,7 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00a"  # versión del programa
+    version = "3.00b"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -161,6 +161,17 @@ async def main():
                 charge_point.set_info(cp_status)
             await asyncio.sleep(300)
 
+    # Función para manejar la excepción en la tarea del charge_point
+    async def run_task_with_exceptinon_handling(task_coro):
+        try:
+            # Intenta ejecutar la tarea original
+            await task_coro
+        except Exception as e:
+            logger.error(
+                colored(f'Error en la tarea {task_coro.__name__}: /n{e}', color='red'))
+
+            # llamar al send_status_notification con el error correspondiente
+
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys("MeterValuesInterval", 30)
     heartbeat_interval = load_keys("HeartbeatInterval", 14400)
@@ -205,12 +216,11 @@ async def main():
 
                     try:
                         # Iniciar charge_point.start() y handle_queue() en segundo plano
-                        asyncio.create_task(charge_point.start())
-                        # asyncio.create_task(handle_queue(queue))
+                        asyncio.create_task(
+                            run_task_with_exceptinon_handling(charge_point.start()))
                         # Se inicia la comunicación serial constante con el cargador en segundo plano
                         asyncio.create_task(check_charger_status(
                             should_pause, charge_point))
-
                         asyncio.create_task(handle_queue(queue))
                     except Exception as e:
                         logger.error(colored(
