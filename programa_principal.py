@@ -54,7 +54,8 @@ async def handle_queue(queue):
     while True:
         if not queue.empty():
             data = await queue.get()
-            logger.info(f"data: {data}")
+            logger.info(
+                f"Mensaje recibido: {data[0]}\n{indent}Datos recibidos: {data[1:]}")
             if data[0] == "RemoteStartTransaction":
                 remote_start_transaction = True
                 id_tag = data[1]

@@ -161,11 +161,11 @@ class MyChargePoint(cp):
         super().__init__(*args, **kwargs)
         self.queue = queue
 
-    async def _handle_call(self, call):
-        # Imprimir el tipo de mensaje
-        print(f'Mensaje recibido: {call.action}')
-        # Llamar al método original para procesar el mensaje
-        await super()._handle_call(call)
+    # async def _handle_call(self, call):
+    #     # Imprimir el tipo de mensaje
+    #     print(f'Mensaje recibido: {call.action}')
+    #     # Llamar al método original para procesar el mensaje
+    #     await super()._handle_call(call)
 
     # Función que maneja la recepción de un mensaje Clear Charging Profile
     @on('ClearChargingProfile')
