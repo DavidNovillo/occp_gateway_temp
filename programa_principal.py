@@ -162,13 +162,26 @@ async def main():
             await asyncio.sleep(300)
 
     # Función para manejar la excepción en la tarea del charge_point
-    async def run_task_with_exceptinon_handling(task_coro):
+    async def run_task_with_exception_handling(task_coro):
+        nonlocal cp_status, battery_status, corriente, voltaje
         try:
             # Intenta ejecutar la tarea original
             await task_coro
         except Exception as e:
             logger.error(
-                colored(f'Error en la tarea {task_coro.__name__}: /n{e}', color='red'))
+                colored(f'Error en la tarea {task_coro.__name__}: \n{e}', color='red'))
+            await asyncio.sleep(5)
+
+            status = estados_status_notification(cp_status)
+            # Enviar un mensaje StatusNotification
+            await charge_point.send_status_notification(
+                connector_id=1,
+                status=status[0],
+                error_code=status[1],
+                info=status[2],
+            )
+            logger.info(
+                colored(f"Status Notification enviado: {status}", color='light_green'))
 
             # llamar al send_status_notification con el error correspondiente
 
@@ -217,7 +230,7 @@ async def main():
                     try:
                         # Iniciar charge_point.start() y handle_queue() en segundo plano
                         asyncio.create_task(
-                            run_task_with_exceptinon_handling(charge_point.start()))
+                            run_task_with_exception_handling(charge_point.start()))
                         # Se inicia la comunicación serial constante con el cargador en segundo plano
                         asyncio.create_task(check_charger_status(
                             should_pause, charge_point))
@@ -537,19 +550,22 @@ async def main():
 
             except websockets.exceptions.ConnectionClosed as e:
                 logger.error(
-                    f"La conexión WebSocket se cerró inesperadamente: {e}")
+                    colored(f"La conexión WebSocket se cerró inesperadamente: \n{e}", color='red'))
             except websockets.exceptions.InvalidURI as e:
-                logger.error(f"La URI proporcionada no es válida: {e}")
+                logger.error(
+                    colored(f"La URI proporcionada no es válida: {e}", color='red'))
             except Exception as e:
-                logger.error(f"Ocurrió un error: {e}")
+                logger.error(colored(f"Ocurrió un error: \n{e}", color='red'))
 
         except Exception as e:
-            logger.error(f"Ocurrió un error al intentar conectar: {e}")
+            logger.error(
+                colored(f"Ocurrió un error al intentar conectar: \n{e}", color='red'))
         except KeyboardInterrupt:
             await ws.close()
             print("Program interrupted by user. Exiting...")
 
-        logger.info(f"Reintentando conexión ({i+1}/{max_retries})...")
+        logger.info(
+            colored(f"Reintentando conexión ({i+1}/{max_retries})...", color='light_red'))
         await asyncio.sleep(retry_delay)  # Espera antes de reintentar
 
     if i == max_retries - 1:  # Si se alcanzó el número máximo de intentos
