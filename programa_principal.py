@@ -177,9 +177,9 @@ async def main():
 
     # Función para reconectar el charge_point
     async def reconnect(charge_point):
-        while not charge_point.is_connected():
+        while charge_point.is_connected() == False:
             try:
-                await charge_point.connect()
+                await charge_point.start()
                 logger.info("Reconectado exitosamente.")
             except Exception as e:
                 logger.error(f"Fallo al reconectar: {e}")
