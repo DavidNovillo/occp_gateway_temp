@@ -90,7 +90,7 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00b"  # versión del programa
+    version = "3.00c"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -163,7 +163,7 @@ async def main():
             await asyncio.sleep(300)
 
     # Función para manejar la excepción en la tarea del charge_point
-    async def run_task_with_exception_handling(task_coro):
+    async def run_task_with_exception_handling(task_coro, charge_point=None):
         nonlocal cp_status, battery_status, corriente, voltaje
         try:
             # Intenta ejecutar la tarea original
@@ -171,24 +171,24 @@ async def main():
         except Exception as e:
             logger.error(
                 colored(f'Error en la tarea {task_coro.__name__}: \n{e}', color='red'))
-            await asyncio.sleep(5)
+            if charge_point.is_connected() == False:
+                logger.info("Intentando reconectar...")
+            await reconnect(charge_point)
 
-            status = estados_status_notification(cp_status)
-            # Enviar un mensaje StatusNotification
-            await charge_point.send_status_notification(
-                connector_id=1,
-                status=status[0],
-                error_code=status[1],
-                info=status[2],
-            )
-            logger.info(
-                colored(f"Status Notification enviado: {status}", color='light_green'))
-
-            # llamar al send_status_notification con el error correspondiente
+    # Función para reconectar el charge_point
+    async def reconnect(charge_point):
+        while not charge_point.is_connected():
+            try:
+                await charge_point.connect()
+                logger.info("Reconectado exitosamente.")
+            except Exception as e:
+                logger.error(f"Fallo al reconectar: {e}")
+            # Espera 10 segundos antes de intentar de nuevo
+            await asyncio.sleep(10)
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys("MeterValuesInterval", 30)
-    heartbeat_interval = load_keys("HeartbeatInterval", 14400)
+    heartbeat_interval = load_keys("HeartbeatInterval", 10800)
     logger.info(
         f"Intervalo de MeterValues: {meter_values_interval} s\n{indent}Intervalo de Heartbeat: {heartbeat_interval} s"
     )
@@ -221,24 +221,22 @@ async def main():
             # Establecimiento de la conexión WebSocket con el Central System
             try:
                 async with websockets.connect(
-                    WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=60
+                    WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=120
                 ) as ws:
 
                     # Crear una instancia de la clase MyChargePoint
                     charge_point = MyChargePoint(
                         "prueba_loja", ws, queue=queue)
 
-                    try:
-                        # Iniciar charge_point.start() y handle_queue() en segundo plano
-                        asyncio.create_task(
-                            run_task_with_exception_handling(charge_point.start()))
-                        # Se inicia la comunicación serial constante con el cargador en segundo plano
-                        asyncio.create_task(check_charger_status(
-                            should_pause, charge_point))
-                        asyncio.create_task(handle_queue(queue))
-                    except Exception as e:
-                        logger.error(colored(
-                            f"Ocurrió un error al intentar iniciar la comunicación con el cargador: {e}", color="red"))
+                    # Iniciar charge_point.start() y handle_queue() en segundo plano
+                    asyncio.create_task(
+                        run_task_with_exception_handling(charge_point.start(), charge_point))
+                    # Se inicia la comunicación serial constante con el cargador en segundo plano
+                    asyncio.create_task(check_charger_status(
+                        should_pause, charge_point))
+                    asyncio.create_task(
+                        run_task_with_exception_handling(handle_queue(queue), charge_point))
+
                     # Enviar un mensaje BootNotification y esperar la respuesta
                     boot_response = await charge_point.send_boot_notification()
                     logger.info(

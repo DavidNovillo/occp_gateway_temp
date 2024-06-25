@@ -38,6 +38,10 @@ class MyChargePoint(cp):
     def set_info(self, info):
         self.info = info
 
+    # Método para verificar el estado de la conexión
+    def is_connected(self):
+        return self._connection.open
+
     # ENVÍO DE MENSAJES HACIA EL CENTRAL SYSTEM
     # Función que envía un mensaje de Boot Notification al Central System
 
