@@ -172,19 +172,7 @@ async def main():
             logger.error(
                 colored(f'Error en la tarea {task_coro.__name__}: \n{e}', color='red'))
             if charge_point.is_connected() == False:
-                logger.info("Intentando reconectar...")
-            await reconnect(charge_point)
-
-    # Función para reconectar el charge_point
-    async def reconnect(charge_point):
-        while charge_point.is_connected() == False:
-            try:
-                await charge_point.start()
-                logger.info("Reconectado exitosamente.")
-            except Exception as e:
-                logger.error(f"Fallo al reconectar: {e}")
-            # Espera 10 segundos antes de intentar de nuevo
-            await asyncio.sleep(10)
+                logger.info(colored("Se perdió la conexión...", color='red'))
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys("MeterValuesInterval", 30)
@@ -207,7 +195,7 @@ async def main():
         f"Estado del cargador: {cp_status}\n{indent}Estado de la batería: {battery_status}\n{indent}Corriente: {corriente}\n{indent}Voltaje: {voltaje}\n{indent}Consumo de energía: {energy_consumption}\n{indent}Potencia: {power}"
     )
 
-    max_retries = 10
+    max_retries = 100
     retry_delay = 30  # delay in seconds
     counter = meter_values_interval + 1
     save_time = True
@@ -221,7 +209,7 @@ async def main():
             # Establecimiento de la conexión WebSocket con el Central System
             try:
                 async with websockets.connect(
-                    WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=120
+                    WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=30
                 ) as ws:
 
                     # Crear una instancia de la clase MyChargePoint
