@@ -246,6 +246,10 @@ async def main():
                     )
                     logger.info(f"Status Notification enviado: {status}")
 
+                    heartbeat_response = await charge_point.send_heartbeat()
+                    logger.info(colored(
+                        f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}", color="light_yellow"))
+
                     send_once = True
                     contador_standby = 0
                     last_cp_status = cp_status
@@ -279,12 +283,8 @@ async def main():
 
                         if time.time() >= hora_intervalo or send_heartbeat == True:
                             heartbeat_response = await charge_point.send_heartbeat()
-                            logger.info(
-                                colored(
-                                    f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}",
-                                    color="light_yellow",
-                                )
-                            )
+                            logger.info(colored(
+                                f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}", color="light_yellow"))
 
                             # Enviar un mensaje StatusNotification
                             status = estados_status_notification(cp_status)
