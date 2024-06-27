@@ -171,7 +171,7 @@ async def main():
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys("MeterValuesInterval", 30)
-    heartbeat_interval = load_keys("HeartbeatInterval", 10800)
+    heartbeat_interval = load_keys("HeartbeatInterval", 14400)
     logger.info(
         f"Intervalo de MeterValues: {meter_values_interval} s\n{indent}Intervalo de Heartbeat: {heartbeat_interval} s"
     )
