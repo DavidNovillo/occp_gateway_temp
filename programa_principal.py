@@ -31,6 +31,7 @@ from constants import (
     WS_URL,
     NUM_CARGADOR,
     ID_CARGADOR,
+    ID_WEBSOCKET
 )
 
 # Importaciones de prueba
@@ -91,7 +92,7 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00f"  # versión del programa
+    version = "3.00g"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -209,13 +210,10 @@ async def main():
 
             # Establecimiento de la conexión WebSocket con el Central System
             try:
-                async with websockets.connect(
-                    WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=30
-                ) as ws:
+                async with websockets.connect(WS_URL, subprotocols=["ocpp1.6"], ping_interval=30, ping_timeout=30) as ws:
 
                     # Crear una instancia de la clase MyChargePoint
-                    charge_point = MyChargePoint(
-                        "prueba_loja", ws, queue=queue)
+                    charge_point = MyChargePoint(ID_WEBSOCKET, ws, queue=queue)
 
                     # Iniciar charge_point.start() y handle_queue() en segundo plano
                     asyncio.create_task(
