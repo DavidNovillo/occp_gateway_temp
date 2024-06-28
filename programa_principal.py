@@ -92,7 +92,7 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00g"  # versión del programa
+    version = "3.00h"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -221,7 +221,7 @@ async def main():
                     asyncio.create_task(run_task_with_exception_handling(
                         handle_queue(queue), charge_point))
                     # Se inicia la comunicación serial constante con el cargador en segundo plano
-                    asyncio.create_task(check_charger_status(
+                    task_serial = asyncio.create_task(check_charger_status(
                         should_pause, charge_point))
 
                     # Enviar un mensaje BootNotification y esperar la respuesta
@@ -259,6 +259,8 @@ async def main():
 
                     while True:
                         if charge_point.is_connected() == False:
+                            await asyncio.sleep(5)
+                            task_serial.cancel()
                             break
                         current_time = (datetime.now(timezone.utc).strftime(
                             "%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z")
