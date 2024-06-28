@@ -216,20 +216,13 @@ async def main():
                     charge_point = MyChargePoint(ID_WEBSOCKET, ws, queue=queue)
 
                     # Iniciar charge_point.start() y handle_queue() en segundo plano
-                    asyncio.create_task(
-                        run_task_with_exception_handling(
-                            charge_point.start(), charge_point
-                        )
-                    )
+                    asyncio.create_task(run_task_with_exception_handling(
+                        charge_point.start(), charge_point))
+                    asyncio.create_task(run_task_with_exception_handling(
+                        handle_queue(queue), charge_point))
                     # Se inicia la comunicación serial constante con el cargador en segundo plano
-                    asyncio.create_task(
-                        check_charger_status(should_pause, charge_point)
-                    )
-                    asyncio.create_task(
-                        run_task_with_exception_handling(
-                            handle_queue(queue), charge_point
-                        )
-                    )
+                    asyncio.create_task(check_charger_status(
+                        should_pause, charge_point))
 
                     # Enviar un mensaje BootNotification y esperar la respuesta
                     boot_response = await charge_point.send_boot_notification()
