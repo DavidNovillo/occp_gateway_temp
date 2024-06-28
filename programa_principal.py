@@ -91,7 +91,7 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00e"  # versión del programa
+    version = "3.00f"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -171,11 +171,9 @@ async def main():
             await task_coro
         except Exception as e:
             logger.error(
-                colored(
-                    f"Error en la tarea {task_coro.__name__}: \n{e}", color="red")
-            )
+                colored(f"Error en la tarea {task_coro.__name__}: \n{e}", color="red"))
             if charge_point.is_connected() == False:
-                logger.info(colored("Se perdió la conexión...", color="red"))
+                logger.error(colored("Se perdió la conexión...", color="red"))
 
     # Cargar valores de intervalos de tiempo desde el archivo keys.json
     meter_values_interval = load_keys("MeterValuesInterval", 30)
@@ -269,12 +267,10 @@ async def main():
                     last_cp_status = cp_status
 
                     while True:
-                        current_time = (
-                            datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
-                                :-3
-                            ]
-                            + "Z"
-                        )
+                        if charge_point.is_connected() == False:
+                            break
+                        current_time = (datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z")
 
                         if last_cp_status != cp_status:
                             status = estados_status_notification(cp_status)
