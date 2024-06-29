@@ -184,9 +184,6 @@ class MyChargePoint(cp):
     # Función que maneja la recepción de un mensaje Remote Start Transaction
     @on('RemoteStartTransaction')
     async def remote_start_transaction(self, id_tag, connector_id, **kwargs):
-        print(f'id_tag: {id_tag}')
-        print(f'connector_id: {connector_id}')
-        print(f'Additional data: {kwargs}')
         # Almacenar los datos en la cola
         await self.queue.put(('RemoteStartTransaction', id_tag, connector_id, kwargs))
         # Devolver un resultado
@@ -202,19 +199,14 @@ class MyChargePoint(cp):
 
     @on('TriggerMessage')
     async def on_trigger_message(self, requested_message: MessageTrigger, connector_id: int = None):
-        print(f'Received TriggerMessage for {requested_message}')
         # Almacenar los datos en la cola
         await self.queue.put(('TriggerMessage', requested_message, connector_id))
         # Devolver un resultado
-        return call_result.TriggerMessage(
-            status=TriggerMessageStatus.accepted
-        )
+        return call_result.TriggerMessage(status=TriggerMessageStatus.accepted)
 
     # Función que maneja la recepción de un mensaje RemoteStopTransaction
     @on('RemoteStopTransaction')
     async def on_remote_stop_transaction(self, transaction_id):
-        print(
-            f'Received RemoteStopTransaction request for transaction_id: {transaction_id}')
         # Almacenar los datos en la cola
         await self.queue.put(('RemoteStopTransaction', transaction_id))
         # Devolver un resultado

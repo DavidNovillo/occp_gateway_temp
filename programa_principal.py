@@ -30,7 +30,6 @@ from constants import (
     TRAMA_MEDIDOR_POTENCIA,
     WS_URL,
     NUM_CARGADOR,
-    ID_CARGADOR,
     ID_WEBSOCKET
 )
 
@@ -55,9 +54,8 @@ async def handle_queue(queue):
     while True:
         if not queue.empty():
             data = await queue.get()
-            logger.info(
-                f"Mensaje recibido: {data[0]}\n{indent}Datos recibidos: {data[1:]}"
-            )
+            logger.info(colored(
+                f"Mensaje recibido: {data[0]}\n{indent}Datos recibidos: {data[1:]}", attrs=["bold"]))
             if data[0] == "RemoteStartTransaction":
                 remote_start_transaction = True
                 id_tag = data[1]
@@ -76,7 +74,7 @@ async def handle_queue(queue):
                 send_meter_reading = False
                 remote_start_transaction = False
                 stop_transaction = False
-        await asyncio.sleep(1)  # Esperar un poco antes de verificar nuevamente
+        await asyncio.sleep(2)  # Esperar un poco antes de verificar nuevamente
 
 
 def clear():  # Función para limpiar la consola
@@ -92,27 +90,13 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00h"  # versión del programa
+    version = "3.00i"  # versión del programa
 
     clear()  # Limpiar la consola
 
     # Se crea el logger
     logger.info(
-        colored(
-            f"\n\nIniciando programa...", attrs=["bold", "blink"], color="light_green"
-        )
-    )
-    logger.info(colored(f"Versión: {version}",
-                attrs=["bold"], color="light_green"))
-    logger.info(
-        colored(f"Punto de carga: {NUM_CARGADOR}",
-                attrs=["bold"], color="light_green")
-    )
-    logger.info(colored(f"ID: {ID_CARGADOR}\n",
-                attrs=["bold"], color="light_green"))
-
-    # Asignación de pines GPIO para encender y apagar las luces piloto
-    # TODO: Revisar si es que es necesario
+        colored(f"\n\nIniciando programa...\n{indent}Version: {version}\n{indent}Punto de carga: {NUM_CARGADOR}\n{indent}ID WS: {ID_WEBSOCKET}", attrs=["bold", "blink"], color="light_green"))
 
     # Configuración de la comunicación serial con el cargador
     try:
@@ -218,7 +202,7 @@ async def main():
                     # Iniciar charge_point.start() y handle_queue() en segundo plano
                     asyncio.create_task(run_task_with_exception_handling(
                         charge_point.start(), charge_point))
-                    asyncio.create_task(run_task_with_exception_handling(
+                    task_queue = asyncio.create_task(run_task_with_exception_handling(
                         handle_queue(queue), charge_point))
                     # Se inicia la comunicación serial constante con el cargador en segundo plano
                     task_serial = asyncio.create_task(check_charger_status(
@@ -253,15 +237,16 @@ async def main():
                         )
                     )
 
-                    send_once = True
                     contador_standby = 0
                     last_cp_status = cp_status
 
                     while True:
                         if charge_point.is_connected() == False:
                             await asyncio.sleep(5)
+                            task_queue.cancel()
                             task_serial.cancel()
                             break
+
                         current_time = (datetime.now(timezone.utc).strftime(
                             "%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z")
 
@@ -288,18 +273,6 @@ async def main():
                             heartbeat_response = await charge_point.send_heartbeat()
                             logger.info(colored(
                                 f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}", color="light_yellow",))
-
-                            # Enviar un mensaje StatusNotification
-                            status = estados_status_notification(cp_status)
-                            await charge_point.send_status_notification(
-                                connector_id=1,
-                                status=status[0],
-                                error_code=status[1],
-                                info=status[2],
-                            )
-                            logger.info(
-                                colored(f"Status Notification enviado: \n{indent}{status}", color="green"))
-
                             save_time = True
                             send_heartbeat = False
 
@@ -378,46 +351,23 @@ async def main():
                                     info=status[2],
                                 )
                                 logger.info(
-                                    f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
-                                )
+                                    f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}")
 
                             else:
                                 cp_status, battery_status, corriente, voltaje = (
-                                    comunicacion_serial_cargador(
-                                        ser, TRAMA_INICIALIZAR, logger
-                                    )
-                                )
+                                    comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger))
+
                             energy_consumption = comunicacion_serial_medidor(
-                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
-                            )
+                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
                             power = comunicacion_serial_medidor(
-                                ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA
-                            )
+                                ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
 
-                            if cp_status == "Cargando" and send_once == True:
-                                status = estados_status_notification(cp_status)
-                                # Enviar un mensaje StatusNotification
-                                await charge_point.send_status_notification(
-                                    connector_id=connector_id,
-                                    status=status[0],
-                                    error_code=status[1],
-                                    info=status[2],
-                                )
-                                logger.info(
-                                    f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}"
-                                )
-                                send_once = False
-
-                            elif cp_status == "StandBy":
+                            if cp_status == "StandBy":
                                 contador_standby += 1
 
                             if contador_standby >= 6:
-                                logger.info(
-                                    colored(
-                                        "Timeout del estado StandBy durante la carga. Terminando la transacción...",
-                                        color="light_red",
-                                    )
-                                )
+                                logger.info(colored(
+                                    "Timeout del estado StandBy durante la carga. Terminando la transacción...", color="light_red"))
 
                             # Enviar un mensaje MeterValues
                             await charge_point.send_meter_values(
@@ -438,14 +388,11 @@ async def main():
                         if (stop_transaction == True or cp_status == "Carga Completa" or battery_status == 100 or contador_standby >= 6):
                             # Detener la carga
                             cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(
-                                    ser, TRAMA_DETENER, logger)
-                            )
+                                comunicacion_serial_cargador(ser, TRAMA_DETENER, logger))
 
                             # Leer el estado del medidor
                             energy_consumption = comunicacion_serial_medidor(
-                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
-                            )
+                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
 
                             status = estados_status_notification(cp_status)
                             # Enviar un mensaje StatusNotification
@@ -475,12 +422,8 @@ async def main():
                                     timestamp=current_time,
                                 )
                             )
-                            logger.info(
-                                colored(
-                                    f"Stop Transaction enviado\n{indent}Meter stop:{energy_consumption}\n{indent}Respuesta: {stop_transaction_response}",
-                                    color="light_magenta",
-                                )
-                            )
+                            logger.info(colored(
+                                f"Stop Transaction enviado\n{indent}Meter stop:{energy_consumption}\n{indent}Respuesta: {stop_transaction_response}", color="light_magenta"))
 
                             stop_transaction = False
 
