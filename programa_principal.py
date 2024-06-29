@@ -96,7 +96,7 @@ async def main():
 
     # Se crea el logger
     logger.info(
-        colored(f"\n\nIniciando programa...\n{indent}Version: {version}\n{indent}Punto de carga: {NUM_CARGADOR}\n{indent}ID WS: {ID_WEBSOCKET}", attrs=["bold", "blink"], color="light_green"))
+        colored(f"\n\nIniciando programa...\nVersion: {version}\nPunto de carga: {NUM_CARGADOR}\nID WS: {ID_WEBSOCKET}", attrs=["bold", "blink"], color="light_green"))
 
     # Configuración de la comunicación serial con el cargador
     try:
