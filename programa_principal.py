@@ -90,7 +90,7 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00i"  # versión del programa
+    version = "3.00j"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -228,14 +228,6 @@ async def main():
                         info=status[2],
                     )
                     logger.info(f"Status Notification enviado: {status}")
-
-                    heartbeat_response = await charge_point.send_heartbeat()
-                    logger.info(
-                        colored(
-                            f"Heartbeat enviado\n{indent}Respuesta: {heartbeat_response}",
-                            color="light_yellow",
-                        )
-                    )
 
                     contador_standby = 0
                     last_cp_status = cp_status
