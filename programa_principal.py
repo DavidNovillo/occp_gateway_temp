@@ -90,13 +90,13 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00j"  # versión del programa
+    version = "3.00k"  # versión del programa
 
     clear()  # Limpiar la consola
 
     # Se crea el logger
     logger.info(
-        colored(f"\n\nIniciando programa...\nVersion: {version}\nPunto de carga: {NUM_CARGADOR}\nID WS: {ID_WEBSOCKET}", attrs=["bold"], color="light_green"))
+        colored(f"Iniciando programa...\n{indent}Version: {version}\n{indent}Punto de carga: {NUM_CARGADOR}\n{indent}ID WS: {ID_WEBSOCKET}", attrs=["bold"], color="light_green"))
 
     # Configuración de la comunicación serial con el cargador
     try:
@@ -210,9 +210,8 @@ async def main():
 
                     # Enviar un mensaje BootNotification y esperar la respuesta
                     boot_response = await charge_point.send_boot_notification()
-                    logger.info(
-                        f"Boot Notification enviado\n{indent}Respuesta: {boot_response}"
-                    )
+                    logger.info(colored(
+                        f"Boot Notification enviado\n{indent}Respuesta: {boot_response}", color="yellow"))
 
                     # Enviar el estado del cargador a la instancia de ChargePoint
                     charge_point.set_info(cp_status)
@@ -227,7 +226,8 @@ async def main():
                         error_code=status[1],
                         info=status[2],
                     )
-                    logger.info(f"Status Notification enviado: {status}")
+                    logger.info(
+                        colored(f"Status Notification enviado: {status}", color="green"))
 
                     contador_standby = 0
                     last_cp_status = cp_status

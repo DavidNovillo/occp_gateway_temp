@@ -188,11 +188,9 @@ class MyChargePoint(cp):
         await self.queue.put(('RemoteStartTransaction', id_tag, connector_id, kwargs))
         # Devolver un resultado
         if self.info == 'StandBy' or self.info == 'Pistola Conectada':
-            print('Status: Accepted')
             return call_result.RemoteStartTransaction(status=RemoteStartStopStatus.accepted)
 
         else:
-            print('Status: Rejected')
             return call_result.RemoteStartTransaction(status=RemoteStartStopStatus.rejected)
 
     # Función que maneja la recepción de un mensaje Trigger Message
