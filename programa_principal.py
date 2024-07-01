@@ -164,8 +164,7 @@ async def main():
     meter_values_interval = load_keys("MeterValuesInterval", 30)
     heartbeat_interval = load_keys("HeartbeatInterval", 14400)
     logger.info(
-        f"Intervalo de MeterValues: {meter_values_interval} s\n{indent}Intervalo de Heartbeat: {heartbeat_interval} s"
-    )
+        f"Intervalo de MeterValues: {meter_values_interval} s\n{indent}Intervalo de Heartbeat: {heartbeat_interval} s")
 
     # Inicialización de variables
     cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
@@ -176,10 +175,6 @@ async def main():
     )
     power = comunicacion_serial_medidor(
         ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
-
-    logger.info(
-        f"Estado del cargador: {cp_status}\n{indent}Estado de la batería: {battery_status}\n{indent}Corriente: {corriente}\n{indent}Voltaje: {voltaje}\n{indent}Consumo de energía: {energy_consumption}\n{indent}Potencia: {power}"
-    )
 
     max_retries = 100
     retry_delay = 30  # delay in seconds
@@ -275,13 +270,9 @@ async def main():
 
                             # Leer el estado del cargador y del medidor
                             cp_status, battery_status, corriente, voltaje = (
-                                comunicacion_serial_cargador(
-                                    ser, TRAMA_INICIALIZAR, logger
-                                )
-                            )
+                                comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger))
                             energy_consumption = comunicacion_serial_medidor(
-                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO
-                            )
+                                ser_medidor, logger, TRAMA_MEDIDOR_CONSUMO)
 
                             status = estados_status_notification(cp_status)
 
