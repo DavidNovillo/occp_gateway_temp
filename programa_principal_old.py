@@ -15,16 +15,12 @@ from ocpp.v16 import call_result, call
 import asyncio
 import websockets
 import RPi.GPIO as GPIO
-import json
 from termcolor import colored
 
 from logger.logger_creator import custom_logger
 from charger_communication.serial_communication import comunicacion_serial_cargador, comunicacion_serial_medidor
 from constants import TRAMA_CARGAR, TRAMA_DETENER, TRAMA_INICIALIZAR, NUM_CARGADOR, ID_CARGADOR
 from ocpp_communication.charge_point import MyChargePoint
-
-# Importaciones de prueba
-from tests.comunicacion_serial_test import test_serial_cargador, test_serial_medidor
 
 
 async def main():

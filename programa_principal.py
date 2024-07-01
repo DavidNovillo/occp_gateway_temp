@@ -80,17 +80,29 @@ async def handle_queue(queue):
 def clear():  # Función para limpiar la consola
     return os.system("clear")
 
+# Configuración inicial del puerto serial
 
-def mover_cursor(x, y):
-    sys.stdout.write(f"\033[{y};{x}H")
-    sys.stdout.flush()
+
+def iniciar_serial(port):
+    if port == '/dev/ttyUSB0':
+        modulo = 'cargador'
+    else:
+        modulo = 'medidor'
+    try:
+        ser = serial.Serial(port, baudrate=9600, parity=serial.PARITY_NONE,
+                            stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS, timeout=1)
+        return ser
+    except serial.SerialException as e:
+        logger.error(
+            colored(f"Revise el modulo USB - RS-485 del {modulo}", color="red"))
+        return None
 
 
 async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00k"  # versión del programa
+    version = "3.00l"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -99,53 +111,41 @@ async def main():
         colored(f"Iniciando programa...\n{indent}Version: {version}\n{indent}Punto de carga: {NUM_CARGADOR}\n{indent}ID WS: {ID_WEBSOCKET}", attrs=["bold"], color="light_green"))
 
     # Configuración de la comunicación serial con el cargador
-    try:
-        ser = serial.Serial(
-            "/dev/ttyUSB0",
-            baudrate=9600,
-            parity=serial.PARITY_NONE,
-            bytesize=serial.EIGHTBITS,
-            timeout=0.5,
-        )
-        ser.reset_output_buffer()
-        ser.reset_input_buffer()
-    except:
-        logger.error(
-            colored("Revise el modulo USB - RS-485 del cargador", color="red"))
+    ser = iniciar_serial('/dev/ttyUSB0')
 
     # Configuración de la comunicación serial con el medidor
-    try:
-        ser_medidor = serial.Serial(
-            "/dev/ttyUSB1",
-            baudrate=9600,
-            parity=serial.PARITY_NONE,
-            stopbits=serial.STOPBITS_ONE,
-            bytesize=serial.EIGHTBITS,
-            timeout=0.3,
-        )
-        ser_medidor.reset_output_buffer()
-        ser_medidor.reset_input_buffer()
-    except:
-        logger.error(
-            colored("Revise el modulo USB - RS-485 del medidor", color="red"))
+    ser_medidor = iniciar_serial('/dev/ttyUSB1')
 
     cp_status, battery_status, corriente, voltaje = None, None, None, None
 
     # Función para verificar el estado del cargador en segundo plano
     async def check_charger_status(should_pause, charge_point=None):
-        nonlocal cp_status, battery_status, corriente, voltaje
+        nonlocal cp_status, battery_status, corriente, voltaje, ser
+        contador_sin_comunicacion = 0
         while True:
             if should_pause[0] == False:
                 logger.info(
                     colored("Comunicación constante activa", attrs=["bold"]))
-                # mover_cursor(1, 1)
                 cp_status, battery_status, corriente, voltaje = (
-                    comunicacion_serial_cargador(
-                        ser, TRAMA_INICIALIZAR, logger)
-                )
+                    comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger))
 
                 # Enviar el estado del cargador a la instancia de ChargePoint
                 charge_point.set_info(cp_status)
+
+            if cp_status == 'Desconocido':
+                contador_sin_comunicacion += 1
+            else:
+                contador_sin_comunicacion = 0
+
+            if contador_sin_comunicacion == 2:
+                ser.close()
+                await asyncio.sleep(3)
+                ser = iniciar_serial('/dev/ttyUSB0')
+
+            # if contador_sin_comunicacion >= 3:
+            #     logger.error(colored(
+            #         "Error en la comunicación con el cargador, reiniciando Raspberry...", color="red"))
+            #     os.system("sudo reboot")
             await asyncio.sleep(300)
 
     # Función para manejar la excepción en la tarea del charge_point
@@ -253,7 +253,7 @@ async def main():
                                 info=status[2],
                             )
                             logger.info(colored(
-                                f"Status Notification enviado por cambio de estado:\n{indent}{status}", color="green"))
+                                f"Status Notification enviado por cambio de estado:\n{indent}{status}\n{indent}Estado anterior: {last_cp_status}", color="green"))
                             last_cp_status = cp_status
 
                         # Bucle para enviar el HeartBeat
