@@ -482,8 +482,7 @@ async def main():
             await ws.close()
             print("Program interrupted by user. Exiting...")
 
-        logger.info(
-            colored(f"Reintentando conexión...", color="light_red"))
+        logger.info(colored(f"Reintentando conexión...", color="light_red"))
         await asyncio.sleep(retry_delay)  # Espera antes de reintentar
 
 
