@@ -102,7 +102,7 @@ async def main():
 
     # Declaración de variables globales
     global remote_start_transaction, stop_transaction, id_tag, connector_id, send_meter_reading, transaction_id, logger, indent, send_heartbeat
-    version = "3.00l"  # versión del programa
+    version = "3.00m"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -176,12 +176,11 @@ async def main():
     power = comunicacion_serial_medidor(
         ser_medidor, logger, TRAMA_MEDIDOR_POTENCIA)
 
-    max_retries = 100
     retry_delay = 30  # delay in seconds
     counter = meter_values_interval + 1
     save_time = True
 
-    for i in range(max_retries):
+    while True:
         try:
             # Crear una cola
             queue = asyncio.Queue()
@@ -484,16 +483,8 @@ async def main():
             print("Program interrupted by user. Exiting...")
 
         logger.info(
-            colored(
-                f"Reintentando conexión ({i+1}/{max_retries})...", color="light_red"
-            )
-        )
+            colored(f"Reintentando conexión...", color="light_red"))
         await asyncio.sleep(retry_delay)  # Espera antes de reintentar
-
-    if i == max_retries - 1:  # Si se alcanzó el número máximo de intentos
-        logger.info(
-            "Se alcanzó el número máximo de intentos de conexión. Reintentando..."
-        )
 
 
 if __name__ == "__main__":
