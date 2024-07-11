@@ -388,9 +388,7 @@ async def main():
                                 info=status[2],
                             )
                             logger.info(
-                                f"Status Notification enviado: {status}\n{
-                                    indent}Connector_id: {connector_id}"
-                            )
+                                f"Status Notification enviado: {status}\n{indent}Connector_id: {connector_id}")
 
                             # Enviar un mensaje StopTransaction
                             stop_transaction_response = (
