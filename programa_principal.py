@@ -114,7 +114,7 @@ async def main():
         logger, \
         indent, \
         send_heartbeat
-    version = "3.00m"  # versión del programa
+    version = "3.00n"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -132,7 +132,7 @@ async def main():
         nonlocal cp_status, battery_status, corriente, voltaje, ser
         contador_sin_comunicacion = 0
         while True:
-            if not should_pause[0]:
+            if should_pause[0] == False:
                 logger.info(
                     colored("Comunicación constante activa", attrs=["bold"]))
                 cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
@@ -166,7 +166,7 @@ async def main():
         except Exception as e:
             logger.error(
                 colored(f"Error en la tarea {task_coro.__name__}: \n{e}", color="red"))
-            if not charge_point.is_connected():
+            if charge_point.is_connected() == False:
                 logger.error(colored("Se perdió la conexión...", color="red"))
 
     # Función para calcular el consumo en kWh

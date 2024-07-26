@@ -8,7 +8,8 @@ ID_CARGADOR = datos_identificador['ID']
 NUM_CARGADOR = datos_identificador['Estacion']
 ID_WEBSOCKET = datos_identificador['id_websocket']
 
-WS_URL = f'wss://app.tridenstechnology.com/ev-charge/gw-comm/condor-energy/{ID_WEBSOCKET}'
+WS_URL = (
+    f'wss://app.tridenstechnology.com/ev-charge/gw-comm/condor-energy/{ID_WEBSOCKET}')
 
 # Se cargan las tramas de comunicación con el cargador
 TRAMA_INICIALIZAR = bytearray(
