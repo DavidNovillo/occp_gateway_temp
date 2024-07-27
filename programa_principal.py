@@ -114,7 +114,7 @@ async def main():
         logger, \
         indent, \
         send_heartbeat
-    version = "3.00n"  # versión del programa
+    version = "3.00o"  # versión del programa
 
     clear()  # Limpiar la consola
 
@@ -374,7 +374,7 @@ async def main():
 
                         if counter < meter_values_interval:
                             counter += 1
-                        if (stop_transaction == True or cp_status == "Carga Completa" or battery_status == 100 or contador_standby >= 6):
+                        if (stop_transaction == True or contador_standby >= 6):
                             # Detener la carga
                             cp_status, battery_status, corriente, voltaje = (
                                 comunicacion_serial_cargador(ser, TRAMA_DETENER, logger))
