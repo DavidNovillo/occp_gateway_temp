@@ -180,8 +180,7 @@ async def main():
         f"Intervalo de MeterValues: {meter_values_interval} s\n{indent}Intervalo de Heartbeat: {heartbeat_interval} s")
 
     # Inicialización de variables
-    cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(
-        ser, TRAMA_INICIALIZAR, logger)
+    # cp_status, battery_status, corriente, voltaje = comunicacion_serial_cargador(ser, TRAMA_INICIALIZAR, logger)
 
     energy_consumption = 0
     power = 0
