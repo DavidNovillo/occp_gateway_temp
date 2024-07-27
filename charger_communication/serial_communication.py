@@ -115,9 +115,7 @@ def comunicacion_serial_cargador(ser, trama, logger):
                 if indice != 0:
                     data_in = data_in[indice:]
                     logger.error(
-                        f"Trama desfasada, longitud: {
-                            len(data_in)}, trama: {data_in}"
-                    )
+                        f"Trama desfasada, longitud: {len(data_in)}, trama: {data_in}")
             except Exception as e:
                 logger.error("No se encontró el x23 en la trama")
                 logger.error(e)
