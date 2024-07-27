@@ -17,15 +17,15 @@ def estados_cargador(dato):
     if dato == "0x3":
         estado = "Carga Completa"
     if dato == "0x4":
-        estado = "0x4 Cargador en Falla"
+        estado = "Cargador en Falla"
     if dato == "0x5":
         estado = "Pistola Conectada"
     if dato == "0xa":
-        estado = "0xA Sobrecalentamiento"
+        estado = "Sobrecalentamiento"
     if dato == "0xb":
-        estado = "0xB Falla de reinicio de contactor"
+        estado = "Falla de reinicio de contactor"
     if dato == "0xe":
-        estado = "0xE Sobrecarga de corriente"
+        estado = "Sobrecarga de corriente"
     if dato == "0x1a":
         estado = "Pistola Conectada Fin de Carga"
     return estado
@@ -101,7 +101,8 @@ def comunicacion_serial_cargador(ser, trama, logger):
         try:
             data_in = ser.read_until("\r\n")
         except ser.SerialTimeoutException as e:
-            logger.error("Tiempo de espera al leer la trama del cargador: %s", str(e))
+            logger.error(
+                "Tiempo de espera al leer la trama del cargador: %s", str(e))
         except Exception as e:
             logger.error(
                 "Problema inesperado al leer la trama del cargador: %s", str(e)
@@ -114,7 +115,8 @@ def comunicacion_serial_cargador(ser, trama, logger):
                 if indice != 0:
                     data_in = data_in[indice:]
                     logger.error(
-                        f"Trama desfasada, longitud: {len(data_in)}, trama: {data_in}"
+                        f"Trama desfasada, longitud: {
+                            len(data_in)}, trama: {data_in}"
                     )
             except Exception as e:
                 logger.error("No se encontró el x23 en la trama")
@@ -128,7 +130,8 @@ def comunicacion_serial_cargador(ser, trama, logger):
                 ser.reset_input_buffer()
                 ser.reset_output_buffer()
             except Exception as e:
-                logger.error("Problema en la comunicación serial (reset_input)")
+                logger.error(
+                    "Problema en la comunicación serial (reset_input)")
                 logger.error(e)
 
         if (
@@ -212,7 +215,8 @@ def comunicacion_serial_medidor(ser, logger, trama):
                 ser.reset_input_buffer()
                 ser.reset_output_buffer()
             except Exception as e:
-                logger.error("Problema en la comunicación serial (reset_input)")
+                logger.error(
+                    "Problema en la comunicación serial (reset_input)")
                 logger.error(e)
 
         intentos = intentos - 1
